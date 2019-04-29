@@ -4,48 +4,41 @@ case class State(
   action: Option[String]
 )
 
-object State extends Entry[State] {
-  object BlockHeader extends Entry.Header("State")
-  object Next extends Entry.Property[Int]("NEXT")
-  object Action extends Entry.Property.SpaceDelimited[String]("ACTION")
+object State extends Block[State] {
+  import Property._
 
-//  def readState(lines: Seq[String]): State = {
-//    val header = lines.headOption
-//    val body = lines.tail.takeWhile(!Entry.isBlank(_))
-//
-//    val init = State(
-//      length = header.size + body.size,
-//      next = None,
-//      action = None
-//    )
-//
-//    body.foldLeft(init)((state, line) => {
-//      line match {
-//        case Next(nextStateId) => state.copy(next = Some(nextStateId))
-//        case Action(name) => state.copy(action = Some(name))
-//        case _ => {
-//          println(s"Warning: couldn't parse line: $line")
-//          state
-//        }
-//      }
-//    })
-//  }
+  object Header extends ValueOf(BlockHeaderProp)
+  object BlockHeaderProp extends Property[Int]
+    with SpaceDelimiter
+    with KeyIn
+  {
+    override val keys: Set[String] = Set("Frame", "FRAME", "State", "STATE")
+  }
 
-  //def apply(lines: Seq[String]): State = readState(lines)
+  object Next extends ValueOf(NextProp)
+  object NextProp extends Property[Int]
+    with EqualsDelimiter
+    with KeyExactly
+  {
+    override val keyName: String = "NEXT"
+  }
+
+  object Action extends ValueOf(ActionProp)
+  object ActionProp extends Property[String]
+    with SpaceDelimiter
+    with KeyExactly
+  {
+    override val keyName: String = "ACTION"
+  }
+
   override def initialState(contents: Seq[String]): State = State(
     length = contents.size,
     next = None,
     action = None
   )
 
-  override def parse(state: State, line: String): State = {
-    line match {
-      case Next(nextStateId) => state.copy(next = Some(nextStateId))
-      case Action(name) => state.copy(action = Some(name))
-      case _ => {
-        println(s"Warning: couldn't parse line: $line")
-        state
-      }
-    }
+  override def parseProperty(entry: State): PartialFunction[String, State] = {
+    case Next(nextStateId) => entry.copy(next = Some(nextStateId))
+    case Action(name) => entry.copy(action = Some(name))
   }
 }

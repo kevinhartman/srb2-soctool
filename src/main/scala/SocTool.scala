@@ -22,7 +22,10 @@ object SocTool extends App {
   def doExtract(): Unit = {
     loadFile() match {
       case Some(file) =>
-        file.getLines()
+        val lines = file.getLines()
+        val script = SocScript(lines.toSeq)
+        println(script)
+
       case None => error("SOC file not found")
     }
 

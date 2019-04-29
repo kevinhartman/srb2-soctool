@@ -18,50 +18,36 @@ case class SocScript(
 }
 
 object SocScript {
-  private def isComment(line: String): Boolean = line.startsWith("#")
-  private def isBlank(line: String): Boolean = line.trim.isEmpty
-
-  def readLevel(lines: Seq[String]): Level = {
-    /* TODO: stubbed */
-    Level(0)
-  }
-
-  def readThing(lines: Seq[String]): Thing = {
-    /* TODO: stubbed */
-    Thing(0)
-  }
-
-  def readSound(lines: Seq[String]): Sound = {
-    /* TODO: stubbed */
-    Sound(0)
-  }
-
-  // TODO: tailrec?
   def readScript(lines: Seq[String]): SocScript = {
     lines.headOption match {
-      case Some(Level.BlockHeader(entityId)) =>
-        val level = readLevel(lines)
+      case Some(Level.Header(entityId)) =>
+        val level = Level(lines)
         val unread = lines.drop(level.length)
         readScript(unread).withLevel(entityId, level)
 
-      case Some(Thing.BlockHeader(entityId)) =>
-        val thing = readThing(lines)
+      case Some(Thing.Header(entityId)) =>
+        val thing = Thing(lines)
         val unread = lines.drop(thing.length)
         readScript(unread).withThing(entityId, thing)
 
-      case Some(State.BlockHeader(entityId)) =>
+      case Some(State.Header(entityId)) =>
         val state = State(lines)
         val unread = lines.drop(state.length)
         readScript(unread).withState(entityId, state)
 
-      case Some(Sound.BlockHeader(entityId)) =>
-        val sound = readSound(lines)
+      case Some(Sound.Header(entityId)) =>
+        val sound = Sound(lines)
         val unread = lines.drop(sound.length)
         readScript(unread).withSound(entityId, sound)
 
       case Some(line) =>
         /* skip if empty line or comment */
-        assert(line.trim().isEmpty || isComment(line))
+        val validNonmatch = Block.isBlank(line) || Block.isComment(line)
+        if (!validNonmatch) {
+          print(s"Failed to parse header: $line")
+          assert(false)
+        }
+
         readScript(lines.drop(1))
       case None =>
         /* end of script: return empty script */

@@ -6,7 +6,7 @@ class StateSpec extends FlatSpec {
     val line = s"State $expectedId"
 
     line match {
-      case State.BlockHeader(stateId) => assert(stateId == expectedId)
+      case State.Header(stateId) => assert(stateId == expectedId)
       case _ => fail()
     }
   }
@@ -35,7 +35,7 @@ class StateSpec extends FlatSpec {
     val line = ""
 
     line match {
-      case State.BlockHeader(_) => fail()
+      case State.Header(_) => fail()
       case State.Action(_) => fail()
       case State.Next(_) => fail()
       case _ =>
@@ -52,7 +52,7 @@ class StateSpec extends FlatSpec {
 
     lines.map(line => List(
       /* unapply for all parsers here to see if they conflict */
-      State.BlockHeader.unapply(line),
+      State.Header.unapply(line),
       State.Action.unapply(line),
       State.Next.unapply(line)
     )).foreach(list =>

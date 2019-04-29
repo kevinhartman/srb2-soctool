@@ -1,42 +1,33 @@
 case class Thing(
-  length: Int
+  length: Int,
+  states: Map[String, Int] = Map(),
+  sounds: Map[String, Int] = Map()
 )
 
-object Thing extends Entry[Thing] {
-  object BlockHeader extends Entry.Header("Thing")
-  object SpawnState extends Entry.Property[Int]("SPAWNSTATE")
-  object SeeState extends Entry.Property[Int]("SEESTATE")
-  object PainState extends Entry.Property[Int]("PAINSTATE")
-  object MeleeState extends Entry.Property[Int]("MELEESTATE")
-  object MissileState extends Entry.Property[Int]("MISSILESTATE")
-  object DeathState extends Entry.Property[Int]("DEATHSTATE")
-  object XDeathState extends Entry.Property[Int]("XDEATHSTATE")
-  object RaiseState extends Entry.Property[Int]("RAISESTATE")
+object Thing extends Block[Thing] {
+  import Property._
 
-//  def readThing(lines: Seq[String]): Thing = {
-//    val header = lines.headOption
-//    val body = lines.tail.takeWhile(!Entry.isBlank(_))
-//
-//    val init = Thing(
-//      length = header.size + body.size,
-//      next = None,
-//      action = None
-//    )
-//
-//    body.foldLeft(init)((state, line) => {
-//      line match {
-//        case Next(nextStateId) => state.copy(next = Some(nextStateId))
-//        case Action(name) => state.copy(action = Some(name))
-//        case _ => {
-//          println(s"Warning: couldn't parse line: $line")
-//          state
-//        }
-//      }
-//    })
-//  }
+  object Header extends Block.Header("Thing")
+  object StateDependency extends Property[Int]
+    with EqualsDelimiter
+    with KeyFilter
+  {
+    override def keyFilter(key: String): Boolean = key.toUpperCase.endsWith("STATE")
+  }
+
+  object SoundDependency extends Property[Int]
+    with EqualsDelimiter
+    with KeyFilter
+  {
+    override def keyFilter(key: String): Boolean = key.toUpperCase.endsWith("SOUND")
+  }
+
   override def initialState(contents: Seq[String]): Thing = Thing(
     length = contents.size
   )
 
-  override def parse(current: Thing, line: String): Thing = ???
+  override def parseProperty(entry: Thing): PartialFunction[String, Thing] = {
+    case StateDependency(property, id) => entry.copy(states = entry.states + (property -> id))
+    case SoundDependency(property, id) => entry.copy(sounds = entry.sounds + (property -> id))
+  }
 }
