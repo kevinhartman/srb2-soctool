@@ -30,7 +30,7 @@ class SocScriptSpec extends FlatSpec {
     )
 
     val script = SocScript(lines)
-    assert(script.states(stateId) == State(
+    assert(script.states(stateId).entity == State(
       length = 6,
       next = Some(nextId),
       action = Some(actionName)
