@@ -1,3 +1,5 @@
+package model
+
 import org.scalatest.FlatSpec
 
 class SocScriptSpec extends FlatSpec {

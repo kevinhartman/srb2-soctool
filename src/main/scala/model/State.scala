@@ -1,3 +1,5 @@
+package model
+
 case class State(
   length: Int,
   next: Option[Int],

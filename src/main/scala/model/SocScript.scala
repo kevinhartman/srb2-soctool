@@ -1,3 +1,5 @@
+package model
+
 case class Entry[T](
   offset: Int,
   entity: T

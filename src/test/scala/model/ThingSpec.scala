@@ -1,3 +1,5 @@
+package model
+
 import org.scalatest.FlatSpec
 
 class ThingSpec extends FlatSpec {

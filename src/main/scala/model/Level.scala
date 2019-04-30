@@ -1,3 +1,5 @@
+package model
+
 case class Level(
   length: Int,
   nextLevel: Option[Int] = None

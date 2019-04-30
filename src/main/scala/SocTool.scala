@@ -1,3 +1,5 @@
+import model.SocScript
+
 import scala.io.Source
 
 object SocTool extends App {

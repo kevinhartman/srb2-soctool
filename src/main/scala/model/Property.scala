@@ -1,5 +1,6 @@
+package model
+
 import scala.util.Try
-import scala.language.implicitConversions
 
 object Property {
 

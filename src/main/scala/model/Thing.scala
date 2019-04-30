@@ -1,3 +1,5 @@
+package model
+
 case class Thing(
   length: Int,
   states: Map[String, Int] = Map(),

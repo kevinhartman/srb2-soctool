@@ -1,3 +1,5 @@
+package model
+
 case class Sound(
   length: Int
 )

@@ -1,3 +1,5 @@
+package model
+
 trait Block[T] {
   def apply(lines: Seq[String]): T = {
     val header = lines.headOption
