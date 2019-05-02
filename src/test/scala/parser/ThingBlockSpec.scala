@@ -1,8 +1,8 @@
-package model
+package parser
 
 import org.scalatest.FlatSpec
 
-class ThingSpec extends FlatSpec {
+class ThingBlockSpec extends FlatSpec {
   it should "parse states with filter property" in {
     val thingId = 123
 
@@ -18,7 +18,10 @@ class ThingSpec extends FlatSpec {
       s"$seeStateKey = $seeStateId"
     )
 
-    val thing = Thing(lines)
+    val thingOpt = ThingBlock.unapply(lines)
+    assert(thingOpt.isDefined)
+
+    val thing = thingOpt.get
     assert(thing.states(meleeStateKey) == meleeStateId)
     assert(thing.states(seeStateKey) == seeStateId)
   }
@@ -38,7 +41,10 @@ class ThingSpec extends FlatSpec {
       s"$seeSoundKey = $seeSoundId"
     )
 
-    val thing = Thing(lines)
+    val thingOpt = ThingBlock.unapply(lines)
+    assert(thingOpt.isDefined)
+
+    val thing = thingOpt.get
     assert(thing.sounds(deathSoundKey) == deathSoundId)
     assert(thing.sounds(seeSoundKey) == seeSoundId)
   }

@@ -1,14 +1,16 @@
-package model
+package parser
+
+import model.State
 
 import org.scalatest.FlatSpec
 
-class StateSpec extends FlatSpec {
+class StateBlockSpec extends FlatSpec {
   it should "parse header line" in {
     val expectedId = 123
     val line = s"State $expectedId"
 
     line match {
-      case State.Header(stateId) => assert(stateId == expectedId)
+      case StateBlock.Header(stateId) => assert(stateId == expectedId)
       case _ => fail()
     }
   }
@@ -18,7 +20,7 @@ class StateSpec extends FlatSpec {
     val line = s"ACTION $expectedAction"
 
     line match {
-      case State.Action(actionName) => assert(actionName == expectedAction)
+      case StateBlock.Action(actionName) => assert(actionName == expectedAction)
       case _ => fail()
     }
   }
@@ -28,7 +30,7 @@ class StateSpec extends FlatSpec {
     val line = s"NEXT = $expectedId"
 
     line match {
-      case State.Next(stateId) => assert(stateId == expectedId)
+      case StateBlock.Next(stateId) => assert(stateId == expectedId)
       case _ => fail()
     }
   }
@@ -37,9 +39,9 @@ class StateSpec extends FlatSpec {
     val line = ""
 
     line match {
-      case State.Header(_) => fail()
-      case State.Action(_) => fail()
-      case State.Next(_) => fail()
+      case StateBlock.Header(_) => fail()
+      case StateBlock.Action(_) => fail()
+      case StateBlock.Next(_) => fail()
       case _ =>
     }
   }
@@ -54,27 +56,30 @@ class StateSpec extends FlatSpec {
 
     lines.map(line => List(
       /* unapply for all parsers here to see if they conflict */
-      State.Header.unapply(line),
-      State.Action.unapply(line),
-      State.Next.unapply(line)
+      StateBlock.Header.unapply(line),
+      StateBlock.Action.unapply(line),
+      StateBlock.Next.unapply(line)
     )).foreach(list =>
       assert(list.count(_.isDefined) == 1)
     )
   }
 
   it should "parse empty State" in {
+    val stateId = 123
     val lines = List(
-      "State 123",
+      s"State $stateId",
       "",
       "",
       ""
     )
 
-    val state = State(lines)
-    assert(state == State(
-      length = 1,
-      next = None,
-      action = None
+    val state = StateBlock.unapply(lines)
+    assert(state.contains(
+      State(
+        id = stateId,
+        next = None,
+        action = None
+      )
     ))
   }
 }

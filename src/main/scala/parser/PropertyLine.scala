@@ -1,8 +1,8 @@
-package model
+package parser
 
 import scala.util.Try
 
-object Property {
+object PropertyLine {
 
   trait Delimiter {
     val delimiter: String
@@ -34,6 +34,7 @@ object Property {
 
   trait LineValueParser[T] extends (String => Option[T]) { }
 
+  // TODO handle post-value comments
   object LineValueParser {
     implicit object StringParser extends LineValueParser[String] {
       override def apply(str: String): Option[String] = Some(str)
@@ -44,7 +45,7 @@ object Property {
     }
   }
 
-  class Property[T]()(implicit converter: LineValueParser[T]) {
+  class PropertyLine[T]()(implicit converter: LineValueParser[T]) {
     this: Delimiter with KeyFilter =>
 
     def unapply(line: String): Option[(String, T)] = {
@@ -58,7 +59,7 @@ object Property {
     }
   }
 
-  class ValueOf[T](val property: Property[T]) {
+  class ValueOf[T](val property: PropertyLine[T]) {
     def unapply(line: String): Option[T] = property.unapply(line).map(_._2)
   }
 }
