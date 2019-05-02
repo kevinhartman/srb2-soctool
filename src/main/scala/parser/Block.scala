@@ -24,13 +24,14 @@ trait Block[T] {
 }
 
 object Block {
-  import PropertyLine._
+  import Line._
 
-  class Header(val entityType: String) extends ValueOf(new HeaderProp(entityType))
-  class HeaderProp(val entityType: String) extends PropertyLine[Int]
+  class Header(val entityType: String) extends ValueOf(new HeaderLine(entityType))
+  class HeaderLine(val entityType: String) extends Line[Int]
     with SpaceDelimiter
     with KeyExactly
   {
     override val keyName: String = entityType
   }
 }
+

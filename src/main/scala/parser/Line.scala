@@ -1,9 +1,33 @@
 package parser
 
+import parser.Line.{Delimiter, KeyFilter, LineValueParser}
+
 import scala.util.Try
 
-object PropertyLine {
+class Line[T]()(implicit converter: LineValueParser[T]) {
+  this: Delimiter with KeyFilter =>
 
+  def unapply(line: String): Option[(String, T)] = {
+    val parts = line.split(delimiter)
+
+    val keyValue = (parts.headOption, parts.tail.headOption)
+    keyValue match {
+      case (Some(key), Some(value)) if keyFilter(key) => converter(value).map((key, _))
+      case _ => None
+    }
+  }
+}
+
+// Snippet of interesting compiler bug that works. Saving here for now.
+//object Value {
+//  def unapply[T](kv: (String, T)): Option[T] = Some(kv._2)
+//}
+//
+//override def parseProperty(level: Level): PartialFunction[String, Level] = {
+//  case NextLevelLine(Value(levelId)) => level.copy(nextLevel = Some(levelId))
+//}
+
+object Line {
   trait Delimiter {
     val delimiter: String
   }
@@ -45,21 +69,7 @@ object PropertyLine {
     }
   }
 
-  class PropertyLine[T]()(implicit converter: LineValueParser[T]) {
-    this: Delimiter with KeyFilter =>
-
-    def unapply(line: String): Option[(String, T)] = {
-      val parts = line.split(delimiter)
-
-      val keyValue = (parts.headOption, parts.tail.headOption)
-      keyValue match {
-        case (Some(key), Some(value)) if keyFilter(key) => converter(value).map((key, _))
-        case _ => None
-      }
-    }
-  }
-
-  class ValueOf[T](val property: PropertyLine[T]) {
+  class ValueOf[T](val property: Line[T]) {
     def unapply(line: String): Option[T] = property.unapply(line).map(_._2)
   }
 }

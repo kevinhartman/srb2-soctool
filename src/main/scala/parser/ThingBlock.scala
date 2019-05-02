@@ -3,17 +3,17 @@ package parser
 import model.Thing
 
 object ThingBlock extends Block[Thing] {
-  import PropertyLine._
+  import Line._
 
   object Header extends Block.Header("Thing")
-  object StateDependency extends PropertyLine[Int]
+  object StateDependencyLine extends Line[Int]
     with EqualsDelimiter
     with KeyFilter
   {
     override def keyFilter(key: String): Boolean = key.toUpperCase.endsWith("STATE")
   }
 
-  object SoundDependency extends PropertyLine[Int]
+  object SoundDependencyLine extends Line[Int]
     with EqualsDelimiter
     with KeyFilter
   {
@@ -27,8 +27,8 @@ object ThingBlock extends Block[Thing] {
   }
 
   override def parseProperty(entry: Thing): PartialFunction[String, Thing] = {
-    case StateDependency(property, id) => entry.copy(states = entry.states + (property -> id))
-    case SoundDependency(property, id) => entry.copy(sounds = entry.sounds + (property -> id))
+    case StateDependencyLine(property, id) => entry.copy(states = entry.states + (property -> id))
+    case SoundDependencyLine(property, id) => entry.copy(sounds = entry.sounds + (property -> id))
   }
 //
 //  override def parseProperty(entry: Thing): PartialFunction[String, Thing] = {

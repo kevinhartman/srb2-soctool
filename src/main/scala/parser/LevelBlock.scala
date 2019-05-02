@@ -5,12 +5,13 @@ import model.Level
 object LevelBlock extends Block[Level] {
   object Header extends Block.Header("Level")
 
-  object NextLevel extends PropertyLine.ValueOf(new PropertyLine.PropertyLine[Int]
-    with PropertyLine.EqualsDelimiter
-    with PropertyLine.KeyExactly
+  object NextLevel extends Line.ValueOf(NextLevelLine)
+  object NextLevelLine extends Line[Int]
+    with Line.EqualsDelimiter
+    with Line.KeyExactly
   {
     override val keyName: String = "NEXTLEVEL"
-  })
+  }
 
   override def parseHeader: PartialFunction[String, Level] = {
     case Header(id) => Level(

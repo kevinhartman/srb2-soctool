@@ -3,26 +3,26 @@ package parser
 import model.State
 
 object StateBlock extends Block[State] {
-  import PropertyLine._
+  import Line._
 
-  object Header extends ValueOf(BlockHeaderProp)
-  object BlockHeaderProp extends PropertyLine[Int]
+  object Header extends ValueOf(HeaderLine)
+  object HeaderLine extends Line[Int]
     with SpaceDelimiter
     with KeyIn
   {
     override val keys: Set[String] = Set("Frame", "FRAME", "State", "STATE")
   }
 
-  object Next extends ValueOf(NextProp)
-  object NextProp extends PropertyLine[Int]
+  object Next extends ValueOf(NextLine)
+  object NextLine extends Line[Int]
     with EqualsDelimiter
     with KeyExactly
   {
     override val keyName: String = "NEXT"
   }
 
-  object Action extends ValueOf(ActionProp)
-  object ActionProp extends PropertyLine[String]
+  object Action extends ValueOf(ActionLine)
+  object ActionLine extends Line[String]
     with SpaceDelimiter
     with KeyExactly
   {
