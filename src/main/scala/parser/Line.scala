@@ -1,22 +1,6 @@
 package parser
 
-import parser.Line.{Delimiter, KeyFilter, LineValueParser}
-
 import scala.util.Try
-
-class Line[T]()(implicit converter: LineValueParser[T]) {
-  this: Delimiter with KeyFilter =>
-
-  def unapply(line: String): Option[(String, T)] = {
-    val parts = line.split(delimiter)
-
-    val keyValue = (parts.headOption, parts.tail.headOption)
-    keyValue match {
-      case (Some(key), Some(value)) if keyFilter(key) => converter(value).map((key, _))
-      case _ => None
-    }
-  }
-}
 
 // Snippet of interesting compiler bug that works. Saving here for now.
 //object Value {
@@ -44,9 +28,15 @@ object Line {
     def keyFilter(key: String): Boolean
   }
 
-  trait KeyExactly extends KeyFilter {
-    val ignoreCase: Boolean = true
+  trait WellDefinedKey {
     val keyName: String
+  }
+
+  trait KeyExactly extends KeyFilter with WellDefinedKey {
+    val ignoreCase: Boolean = true
+    override val keyName: String
+
+    //override val writeKey: String = keyName
     override def keyFilter(key: String): Boolean =
       if (ignoreCase) key.equalsIgnoreCase(keyName) else key.equals(keyName)
   }
@@ -69,7 +59,27 @@ object Line {
     }
   }
 
-  class ValueOf[T](val property: Line[T]) {
-    def unapply(line: String): Option[T] = property.unapply(line).map(_._2)
+  class Like[T]()(implicit converter: LineValueParser[T]) {
+    this: Delimiter with KeyFilter =>
+
+    def unapply(line: String): Option[T] = {
+      val parts = line.split(delimiter)
+
+      val keyValue = (parts.headOption, parts.tail.headOption)
+      keyValue match {
+        case (Some(key), Some(value)) if keyFilter(key) => converter(value)
+        case _ => None
+      }
+    }
+  }
+
+  class Distinct[T](implicit converter: LineValueParser[T]) extends Like[T]()(converter) {
+    this: Delimiter with KeyFilter with WellDefinedKey =>
+
+    def writeValueToString(value: T): String = value.toString
+
+    def apply(value: T): String = {
+      s"$keyName$delimiter$value"
+    }
   }
 }

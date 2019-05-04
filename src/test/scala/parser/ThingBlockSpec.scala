@@ -22,8 +22,8 @@ class ThingBlockSpec extends FlatSpec {
     assert(thingOpt.isDefined)
 
     val thing = thingOpt.get
-    assert(thing.states(meleeStateKey) == meleeStateId)
-    assert(thing.states(seeStateKey) == seeStateId)
+    assert(thing.states.contains(meleeStateId))
+    assert(thing.states.contains(seeStateId))
   }
 
   it should "parse sounds with filter property" in {
@@ -45,7 +45,7 @@ class ThingBlockSpec extends FlatSpec {
     assert(thingOpt.isDefined)
 
     val thing = thingOpt.get
-    assert(thing.sounds(deathSoundKey) == deathSoundId)
-    assert(thing.sounds(seeSoundKey) == seeSoundId)
+    assert(thing.sounds.contains(deathSoundId))
+    assert(thing.sounds.contains(seeSoundId))
   }
 }

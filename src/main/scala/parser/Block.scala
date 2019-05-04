@@ -26,8 +26,7 @@ trait Block[T] {
 object Block {
   import Line._
 
-  class Header(val entityType: String) extends ValueOf(new HeaderLine(entityType))
-  class HeaderLine(val entityType: String) extends Line[Int]
+  class HeaderLine(val entityType: String) extends Distinct[Int]
     with SpaceDelimiter
     with KeyExactly
   {

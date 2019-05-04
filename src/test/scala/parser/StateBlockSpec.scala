@@ -10,7 +10,7 @@ class StateBlockSpec extends FlatSpec {
     val line = s"State $expectedId"
 
     line match {
-      case StateBlock.Header(stateId) => assert(stateId == expectedId)
+      case StateBlock.HeaderLine(stateId) => assert(stateId == expectedId)
       case _ => fail()
     }
   }
@@ -20,7 +20,7 @@ class StateBlockSpec extends FlatSpec {
     val line = s"ACTION $expectedAction"
 
     line match {
-      case StateBlock.Action(actionName) => assert(actionName == expectedAction)
+      case StateBlock.ActionLine(actionName) => assert(actionName == expectedAction)
       case _ => fail()
     }
   }
@@ -30,7 +30,7 @@ class StateBlockSpec extends FlatSpec {
     val line = s"NEXT = $expectedId"
 
     line match {
-      case StateBlock.Next(stateId) => assert(stateId == expectedId)
+      case StateBlock.NextLine(stateId) => assert(stateId == expectedId)
       case _ => fail()
     }
   }
@@ -39,9 +39,9 @@ class StateBlockSpec extends FlatSpec {
     val line = ""
 
     line match {
-      case StateBlock.Header(_) => fail()
-      case StateBlock.Action(_) => fail()
-      case StateBlock.Next(_) => fail()
+      case StateBlock.HeaderLine(_) => fail()
+      case StateBlock.ActionLine(_) => fail()
+      case StateBlock.NextLine(_) => fail()
       case _ =>
     }
   }
@@ -56,9 +56,9 @@ class StateBlockSpec extends FlatSpec {
 
     lines.map(line => List(
       /* unapply for all parsers here to see if they conflict */
-      StateBlock.Header.unapply(line),
-      StateBlock.Action.unapply(line),
-      StateBlock.Next.unapply(line)
+      StateBlock.HeaderLine.unapply(line),
+      StateBlock.ActionLine.unapply(line),
+      StateBlock.NextLine.unapply(line)
     )).foreach(list =>
       assert(list.count(_.isDefined) == 1)
     )

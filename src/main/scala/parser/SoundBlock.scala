@@ -3,15 +3,31 @@ package parser
 import model.Sound
 
 object SoundBlock extends Block[Sound] {
-  object Header extends Block.Header("Sound")
+  import Line.{KeyExactly, EqualsDelimiter}
+  object HeaderLine extends Block.HeaderLine("SOUND")
+
+  object PriorityLine extends Line.Distinct[Int]
+    with EqualsDelimiter
+    with KeyExactly
+  {
+    override val keyName: String = "PRIORITY"
+  }
+
+  object FlagsLine extends Line.Distinct[Int]
+    with EqualsDelimiter
+    with KeyExactly
+  {
+    override val keyName: String = "FLAGS"
+  }
 
   override def parseHeader: PartialFunction[String, Sound] = {
-    case Header(id) => Sound(
+    case HeaderLine(id) => Sound(
       id = id
     )
   }
 
-  override def parseProperty(current: Sound): PartialFunction[String, Sound] =
-    /* currently, we don't care about any Sound properties */
-    PartialFunction.empty
+  override def parseProperty(sound: Sound): PartialFunction[String, Sound] = {
+    case PriorityLine(priority) => sound.copy(priority = Some(priority))
+    case FlagsLine(flags) => sound.copy(flags = Some(flags))
+  }
 }
