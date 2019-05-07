@@ -1,4 +1,4 @@
-package parser
+package block
 
 trait Block[T] {
   def readEntity(initialState: T, body: Seq[String]): T = {

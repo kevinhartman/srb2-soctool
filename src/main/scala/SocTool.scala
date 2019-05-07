@@ -1,4 +1,4 @@
-import parser.SocScript
+import block.SocScript
 
 import scala.io.Source
 
