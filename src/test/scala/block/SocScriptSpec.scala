@@ -1,5 +1,3 @@
-package block
-
 import model._
 
 import org.scalatest.FlatSpec

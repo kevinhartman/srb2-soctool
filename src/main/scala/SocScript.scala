@@ -1,6 +1,5 @@
-package block
-
 import model._
+import block._
 
 case class Entry[T](
   offset: Int,
