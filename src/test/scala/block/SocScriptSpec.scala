@@ -21,7 +21,7 @@ class SocScriptSpec extends FlatSpec {
     val lines = List(
       "",
       "",
-      s"State $stateId",
+      s"State $stateId#this is a comment",
       "FAKE VALUE",
       s"NEXT = $nextId",
       s"ACTION $actionName",

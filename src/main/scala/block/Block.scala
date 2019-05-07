@@ -26,6 +26,8 @@ trait Block[T] {
 object Block {
   import Line._
 
+  val CommentSignifier = "#"
+
   class HeaderLine(val entityType: String) extends Distinct[Int]
     with SpaceDelimiter
     with KeyExactly

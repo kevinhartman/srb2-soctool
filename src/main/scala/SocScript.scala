@@ -28,7 +28,7 @@ case class SocScript(
 
 object SocScript {
   def readScript(indexedLines: Seq[(String, Int)]): SocScript = {
-    def isComment(line: String) = line.startsWith("#")
+    def isComment(line: String) = line.startsWith(Block.CommentSignifier)
     def isBlank(line: String) = line.trim.isEmpty
 
     val lines = indexedLines.map(_._1)

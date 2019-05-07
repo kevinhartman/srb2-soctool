@@ -48,7 +48,6 @@ object Line {
 
   trait LineValueParser[T] extends (String => Option[T]) { }
 
-  // TODO handle post-value comments
   object LineValueParser {
     implicit object StringParser extends LineValueParser[String] {
       override def apply(str: String): Option[String] = Some(str)
@@ -63,7 +62,8 @@ object Line {
     this: Delimiter with KeyFilter =>
 
     def unapply(line: String): Option[T] = {
-      val parts = line.split(delimiter)
+      val nonComment = line.split(Block.CommentSignifier).headOption.getOrElse("")
+      val parts = nonComment.split(delimiter)
 
       val keyValue = (parts.headOption, parts.tail.headOption)
       keyValue match {
