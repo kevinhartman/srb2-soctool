@@ -226,4 +226,34 @@ object ThingBlock extends Block[Thing] {
 
   override def parseProperty(thing: Thing): PartialFunction[String, Thing] =
     parseDependency(thing).andThen(parseProperty)
+
+  override def writeHeader(thing: Thing): String = HeaderLine(thing.id)
+
+  override def writeProperties(thing: Thing): Seq[String] = {
+    Seq(
+      thing.mapThingNum  .map(MapThingNumLine(_)),
+      thing.spawnState   .map(SpawnStateLine(_)),
+      thing.spawnHealth  .map(SpawnHealthLine(_)),
+      thing.seeState     .map(SeeStateLine(_)),
+      thing.seeSound     .map(SeeSoundLine(_)),
+      thing.reactionTime .map(ReactionTimeLine(_)),
+      thing.attackSound  .map(AttackSoundLine(_)),
+      thing.painState    .map(PainStateLine(_)),
+      thing.painChance   .map(PainChanceLine(_)),
+      thing.painSound    .map(PainSoundLine(_)),
+      thing.meleeState   .map(MeleeStateLine(_)),
+      thing.missilesState.map(MissileStateLine(_)),
+      thing.deathState   .map(DeathStateLine(_)),
+      thing.deathSound   .map(DeathSoundLine(_)),
+      thing.xDeathState  .map(XDeathStateLine(_)),
+      thing.speed        .map(SpeedLine(_)),
+      thing.radius       .map(RadiusLine(_)),
+      thing.height       .map(HeightLine(_)),
+      thing.mass         .map(MassLine(_)),
+      thing.damage       .map(DamageLine(_)),
+      thing.activeSound  .map(ActiveSoundLine(_)),
+      thing.raiseState   .map(RaiseStateLine(_)),
+      thing.flags        .map(FlagsLine(_))
+    ).flatten
+  }
 }

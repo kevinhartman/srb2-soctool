@@ -21,6 +21,13 @@ trait Block[T] {
 
   def parseHeader: PartialFunction[String, T]
   def parseProperty(current: T): PartialFunction[String, T]
+
+  def apply(entity: T): Seq[String] = {
+    Seq(writeHeader(entity)) ++ writeProperties(entity)
+  }
+
+  def writeHeader(entity: T): String
+  def writeProperties(entity: T): Seq[String]
 }
 
 object Block {

@@ -28,6 +28,15 @@ object SoundBlock extends Block[Sound] {
 
   override def parseProperty(sound: Sound): PartialFunction[String, Sound] = {
     case PriorityLine(priority) => sound.copy(priority = Some(priority))
-    case FlagsLine(flags) => sound.copy(flags = Some(flags))
+    case FlagsLine(flags)       => sound.copy(flags = Some(flags))
+  }
+
+  override def writeHeader(sound: Sound): String = HeaderLine(sound.id)
+
+  override def writeProperties(sound: Sound): Seq[String] = {
+    Seq(
+      sound.priority.map(PriorityLine(_)),
+      sound.flags   .map(FlagsLine(_))
+    ).flatten
   }
 }

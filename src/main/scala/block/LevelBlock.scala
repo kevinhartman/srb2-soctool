@@ -76,18 +76,30 @@ object LevelBlock extends Block[Level] {
   }
 
   override def parseProperty(level: Level): PartialFunction[String, Level] = {
-    case LevelNameLine(name) => level.copy(levelName = Some(name))
-    case NextLevelLine(levelId) => level.copy(nextLevel = Some(levelId))
-    case MusicSlotLine(slot) => level.copy(musicSlot = Some(slot))
-    case WeatherLine(weather) => level.copy(weather = Some(weather))
-    case SkyNumLine(num) => level.copy(skyNum = Some(num))
-    case NoZoneLine(noZone) => level.copy(noZone = Some(noZone))
-    case NoSSMusicLine(noSSMusic) => level.copy(noSSMusic = Some(noSSMusic))
+    case LevelNameLine(name)          => level.copy(levelName = Some(name))
+    case NextLevelLine(levelId)       => level.copy(nextLevel = Some(levelId))
+    case MusicSlotLine(slot)          => level.copy(musicSlot = Some(slot))
+    case WeatherLine(weather)         => level.copy(weather = Some(weather))
+    case SkyNumLine(num)              => level.copy(skyNum = Some(num))
+    case NoZoneLine(noZone)           => level.copy(noZone = Some(noZone))
+    case NoSSMusicLine(noSSMusic)     => level.copy(noSSMusic = Some(noSSMusic))
     case LevelSelectLine(levelSelect) => level.copy(levelSelect = Some(levelSelect))
     case TypeOfLevelLine(typeOfLevel) => level.copy(typeOfLevel = Some(typeOfLevel))
   }
 
-  def test() = {
-    NoZoneLine.apply(4)
+  override def writeHeader(level: Level): String = HeaderLine(level.id)
+
+  override def writeProperties(level: Level): Seq[String] = {
+    Seq(
+      level.levelName  .map(LevelNameLine(_)),
+      level.nextLevel  .map(NextLevelLine(_)),
+      level.musicSlot  .map(MusicSlotLine(_)),
+      level.weather    .map(WeatherLine(_)),
+      level.skyNum     .map(SkyNumLine(_)),
+      level.noZone     .map(NoZoneLine(_)),
+      level.noSSMusic  .map(NoSSMusicLine(_)),
+      level.levelSelect.map(LevelSelectLine(_)),
+      level.typeOfLevel.map(TypeOfLevelLine(_))
+    ).flatten
   }
 }
