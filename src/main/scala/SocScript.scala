@@ -24,6 +24,62 @@ case class SocScript(
 
   def withSound(entityId: Int, sound: Entry[Sound]): SocScript =
     this.copy(sounds = this.sounds + (entityId -> sound))
+
+  def extractLevel(id: Int, result: SocScript = SocScript()): SocScript = {
+    levels.get(id) match {
+      case Some(levelEntry) if !result.levels.contains(id) =>
+        result.withLevel(id, levelEntry)
+      case _ =>
+        println(s"* Warning: Level $id not found in script.")
+        result
+    }
+  }
+
+  def extractThing(id: Int, result: SocScript = SocScript()): SocScript = {
+    things.get(id) match {
+      case Some(thingEntry) if !result.things.contains(id) =>
+        val withThing: SocScript = result.withThing(id, thingEntry)
+
+        val withStates = thingEntry.entity.states.foldLeft(withThing)((res, stateId) =>
+          extractState(stateId, res)
+        )
+
+        val withSounds = thingEntry.entity.sounds.foldLeft(withStates)((res, soundId) =>
+          extractSound(soundId, res)
+        )
+
+        withSounds
+      case _ =>
+        println(s"* Warning: Thing $id not found in script.")
+        result
+    }
+  }
+
+  def extractState(id: Int, result: SocScript = SocScript()): SocScript = {
+    states.get(id) match {
+      case Some(stateEntry) if !result.states.contains(id) =>
+        val withState = result.withState(id, stateEntry)
+        val withNextState = stateEntry.entity.next.map(extractState(_, withState))
+
+        withNextState match {
+          case Some(next) => next
+          case None => withState
+        }
+      case _ =>
+        println(s"* Warning: State $id not found in script.")
+        result
+    }
+  }
+
+  def extractSound(id: Int, result: SocScript = SocScript()): SocScript = {
+    sounds.get(id) match {
+      case Some(soundEntry) if !result.sounds.contains(id) =>
+        result.withSound(id, soundEntry)
+      case _ =>
+        println(s"* Warning: Sound $id not found in script.")
+        result
+    }
+  }
 }
 
 object SocScript {

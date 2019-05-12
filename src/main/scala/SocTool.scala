@@ -20,15 +20,26 @@ object SocTool extends App {
   }
 
   def doExtract(): Unit = {
-    loadFile() match {
+    val entity = entityType.getOrElse(error("Missing entity type"))
+    val id = entityId.getOrElse(error("Missing entity id")).toInt
+
+    val extracted = loadFile() match {
       case Some(file) =>
         val lines = file.getLines()
         val script = SocScript(lines.toSeq)
         println(script)
 
+        entity.toUpperCase match {
+          case "THING" => script.extractThing(id)
+          case "LEVEL" => script.extractLevel(id)
+          case "STATE" => script.extractState(id)
+          case "SOUND" => script.extractSound(id)
+        }
       case None => error("SOC file not found")
     }
 
+    /* print extracted blocks to stdout */
+    println(extracted)
   }
 
   action.map(_.toLowerCase) match {
