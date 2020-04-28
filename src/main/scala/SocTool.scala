@@ -9,10 +9,14 @@ object SocTool extends App {
   def argValue(argNames: Set[String]): Option[String] =
     args.dropWhile(arg => !argNames.contains(arg)).drop(1).headOption
 
+  def argFlag(argNames: Set[String]): Boolean =
+    args.dropWhile(arg => !argNames.contains(arg)).nonEmpty
+
   val entityType = argValue(Set("--type", "-t"))
   val entityId = argValue(Set("--id", "-d"))
   val action = argValue(Set("--action", "-a"))
   val socFile = argValue(Set("--soc", "-s"))
+  val toLua = argFlag(Set("--to-lua", "-l"))
 
   def loadFile(): Option[Source] = {
     val file = socFile.map(fileName => Source.fromFile(fileName))
@@ -27,7 +31,6 @@ object SocTool extends App {
       case Some(file) =>
         val lines = file.getLines()
         val script = SocScript(lines.toSeq)
-        println(script)
 
         entity.toUpperCase match {
           case "THING" => script.extractThing(id)
@@ -38,8 +41,13 @@ object SocTool extends App {
       case None => error("SOC file not found")
     }
 
+    val print: SocScript => Unit = if (toLua)
+      PrintAsLua(PrinterConfig())
+    else
+      PrintAsSoc(PrinterConfig())
+
     /* print extracted blocks to stdout */
-    println(extracted)
+    print(extracted)
   }
 
   action.map(_.toLowerCase) match {
