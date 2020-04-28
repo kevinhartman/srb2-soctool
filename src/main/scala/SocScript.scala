@@ -29,6 +29,7 @@ case class SocScript(
     levels.get(id) match {
       case Some(levelEntry) if !result.levels.contains(id) =>
         result.withLevel(id, levelEntry)
+      case Some(_) => result // already processed
       case _ =>
         println(s"* Warning: Level $id not found in script.")
         result
@@ -49,7 +50,8 @@ case class SocScript(
         )
 
         withSounds
-      case _ =>
+      case Some(_) => result // already processed
+      case None =>
         println(s"* Warning: Thing $id not found in script.")
         result
     }
@@ -65,6 +67,7 @@ case class SocScript(
           case Some(next) => next
           case None => withState
         }
+      case Some(_) => result // already processed
       case _ =>
         println(s"* Warning: State $id not found in script.")
         result
@@ -75,6 +78,7 @@ case class SocScript(
     sounds.get(id) match {
       case Some(soundEntry) if !result.sounds.contains(id) =>
         result.withSound(id, soundEntry)
+      case Some(_) => result // already processed
       case _ =>
         println(s"* Warning: Sound $id not found in script.")
         result
