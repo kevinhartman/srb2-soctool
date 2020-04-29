@@ -56,7 +56,7 @@ object PrintAsLua {
       val sound = entry.entity
 
       println(s"S_sfx[${sound.id}] = {")
-      printProp("singular = false,") // default, but print it anyway for clarity
+      sound.singular.map(s => s"singular = $s,").foreach(printProp)
       sound.priority.map(s => s"priority = $s,").foreach(printProp)
       sound.flags.map(s => s"flags = $s,").foreach(printProp)
       println("}")
