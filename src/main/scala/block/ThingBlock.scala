@@ -133,6 +133,13 @@ object ThingBlock extends Block[Thing] {
     override val keyName: String = "HEIGHT"
   }
 
+  object DispOffsetLine extends Line.Distinct[Int]
+    with EqualsDelimiter
+    with KeyExactly
+  {
+    override val keyName: String = "DISPOFFSET"
+  }
+
   object MassLine extends Line.Distinct[Int]
     with EqualsDelimiter
     with KeyExactly
@@ -218,6 +225,7 @@ object ThingBlock extends Block[Thing] {
     case (RadiusLine(radius),        thing) => thing.copy(radius = Some(radius))
     case (HeightLine(height),        thing) => thing.copy(height = Some(height))
     case (MassLine(mass),            thing) => thing.copy(mass = Some(mass))
+    case (DispOffsetLine(offset),    thing) => thing.copy(dispOffset = Some(offset))
     case (DamageLine(damage),        thing) => thing.copy(damage = Some(damage))
     case (ActiveSoundLine(soundId),  thing) => thing.copy(activeSound = Some(soundId))
     case (RaiseStateLine(stateId),   thing) => thing.copy(raiseState = Some(stateId))
@@ -249,6 +257,7 @@ object ThingBlock extends Block[Thing] {
       thing.speed        .map(SpeedLine(_)),
       thing.radius       .map(RadiusLine(_)),
       thing.height       .map(HeightLine(_)),
+      thing.dispOffset   .map(DispOffsetLine(_)),
       thing.mass         .map(MassLine(_)),
       thing.damage       .map(DamageLine(_)),
       thing.activeSound  .map(ActiveSoundLine(_)),

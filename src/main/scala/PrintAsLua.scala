@@ -28,14 +28,13 @@ object PrintAsLua {
       thing.radius.map(s => s"radius = $s,").foreach(printProp)
       thing.height.map(s => s"height = $s,").foreach(printProp)
       thing.mass.map(s => s"mass = $s,").foreach(printProp)
+      thing.dispOffset.map(s => s"dispoffset = $s,").foreach(printProp)
       thing.damage.map(s => s"damage = $s,").foreach(printProp)
       thing.activeSound.map(s => s"activesound = $s,").foreach(printProp)
       thing.flags.map(s => s"flags = $s,").foreach(printProp)
       thing.raiseState.map(s => s"raisestate = $s").foreach(printProp)
       println("}")
       println()
-
-      // Not supported by SOC: "dispoffset" (defaults to 0)
     })
 
     socScript.states.values.filter(config.stateFilter).foreach(entry => {

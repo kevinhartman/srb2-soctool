@@ -20,6 +20,7 @@ case class Thing(
   speed: Option[Int] = None,
   radius: Option[Int] = None,
   height: Option[Int] = None,
+  dispOffset: Option[Int] = None,
   mass: Option[Int] = None,
   damage: Option[Int] = None,
   activeSound: Option[Int] = None,
