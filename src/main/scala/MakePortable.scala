@@ -61,8 +61,13 @@ object MakePortable {
         id = slotRenameRules.stateId(state.id).getOrElse(state.id),
         next = patchState(state.next),
         spriteNumber = patchSprite(state.spriteNumber),
+        var1 = state.action match {
+          case Some("A_OldRingExplode") => patchThing(state.var1)
+          case _ => state.var1
+        },
         var2 = state.action match {
           case Some("A_SpawnObjectRelative") => patchThing(state.var2)
+          case Some("A_BossScream") => patchThing(state.var2)
           case _ => state.var2
         }
       ))}

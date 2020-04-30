@@ -1,5 +1,13 @@
 import scala.io.Source
 
+// TODO:
+//  - Filters should ideally recurse through var1 and var2 references to other objects
+//  - Currently, we just replace var1 and var2 value with the generated name if we are
+//    in port mode. This isn't correct in cases where a variable has upper bits used
+//    for something else (e.g. A_SpawnObjectRelative's var2 has lower 16 bits for object
+//    name).
+//  - We should only port var1 and var2 if we upgraded their targets in this filter, possibly.
+
 object SocTool extends App {
 
   def error(message: String) = {
