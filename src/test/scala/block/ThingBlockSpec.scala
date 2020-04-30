@@ -4,13 +4,13 @@ import org.scalatest.FlatSpec
 
 class ThingBlockSpec extends FlatSpec {
   it should "parse states with filter property" in {
-    val thingId = 123
+    val thingId = "123"
 
     val meleeStateKey = "MELEESTATE"
-    val meleeStateId = 111
+    val meleeStateId = "111"
 
     val seeStateKey = "SeeStAte"
-    val seeStateId = 222
+    val seeStateId = "222"
 
     val lines = List(
       s"Thing $thingId",
@@ -27,13 +27,13 @@ class ThingBlockSpec extends FlatSpec {
   }
 
   it should "parse sounds with filter property" in {
-    val thingId = 123
+    val thingId = "123"
 
     val deathSoundKey = "DEATHSOUND"
-    val deathSoundId = 111
+    val deathSoundId = "111"
 
     val seeSoundKey = "SeeSounD"
-    val seeSoundId = 222
+    val seeSoundId = "222"
 
     val lines = List(
       s"Thing $thingId",

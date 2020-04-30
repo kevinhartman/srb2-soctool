@@ -3,6 +3,12 @@ import block._
 
 object PrintAsSoc {
   def apply(config: PrinterConfig)(socScript: SocScript): Unit = {
+    if (socScript.freeSlots.nonEmpty) {
+      println("Freeslot")
+      socScript.freeSlots.foreach(println)
+      println()
+    }
+
     socScript.levels.values.filter(config.levelFilter).foreach(entry => {
       LevelBlock(entry.entity).foreach(println)
       println()

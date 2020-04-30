@@ -65,7 +65,7 @@ class StateBlockSpec extends FlatSpec {
   }
 
   it should "parse empty State" in {
-    val stateId = 123
+    val stateId = "123"
     val lines = List(
       s"State $stateId"
     )

@@ -35,7 +35,7 @@ object Block {
 
   val CommentSignifier = "#"
 
-  class HeaderLine(val entityType: String) extends Distinct[Int]
+  class HeaderLine(val entityType: String) extends Distinct[String]
     with SpaceDelimiter
     with KeyExactly
   {

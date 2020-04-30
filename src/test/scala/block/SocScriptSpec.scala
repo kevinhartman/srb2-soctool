@@ -14,8 +14,8 @@ class SocScriptSpec extends FlatSpec {
   }
 
   it should "handle states" in {
-    val stateId = 1
-    val nextId = 999
+    val stateId = "1"
+    val nextId = "999"
     val actionName = "a_Test"
 
     val lines = List(

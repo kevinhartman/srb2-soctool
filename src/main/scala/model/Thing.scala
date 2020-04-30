@@ -1,39 +1,39 @@
 package model
 
 case class Thing(
-  id: Int,
-  mapThingNum: Option[Int] = None,
-  spawnState: Option[Int] = None,
-  spawnHealth: Option[Int] = None,
-  seeState: Option[Int] = None,
-  seeSound: Option[Int] = None,
-  reactionTime: Option[Int] = None,
-  attackSound: Option[Int] = None,
-  painState: Option[Int] = None,
-  painChance: Option[Int] = None,
-  painSound: Option[Int] = None,
-  meleeState: Option[Int] = None,
-  missilesState: Option[Int] = None,
-  deathState: Option[Int] = None,
-  deathSound: Option[Int] = None,
-  xDeathState: Option[Int] = None,
-  speed: Option[Int] = None,
-  radius: Option[Int] = None,
-  height: Option[Int] = None,
-  dispOffset: Option[Int] = None,
-  mass: Option[Int] = None,
-  damage: Option[Int] = None,
-  activeSound: Option[Int] = None,
-  raiseState: Option[Int] = None,
-  flags: Option[Int] = None,
+  id: String,
+  mapThingNum: Option[String] = None,
+  spawnState: Option[String] = None,
+  spawnHealth: Option[String] = None,
+  seeState: Option[String] = None,
+  seeSound: Option[String] = None,
+  reactionTime: Option[String] = None,
+  attackSound: Option[String] = None,
+  painState: Option[String] = None,
+  painChance: Option[String] = None,
+  painSound: Option[String] = None,
+  meleeState: Option[String] = None,
+  missilesState: Option[String] = None,
+  deathState: Option[String] = None,
+  deathSound: Option[String] = None,
+  xDeathState: Option[String] = None,
+  speed: Option[String] = None,
+  radius: Option[String] = None,
+  height: Option[String] = None,
+  dispOffset: Option[String] = None,
+  mass: Option[String] = None,
+  damage: Option[String] = None,
+  activeSound: Option[String] = None,
+  raiseState: Option[String] = None,
+  flags: Option[String] = None,
 
-  states: Set[Int] = Set(),
-  sounds: Set[Int] = Set()
+  states: Set[String] = Set(),
+  sounds: Set[String] = Set()
 )
 {
-  def withState(stateId: Int): Thing =
+  def withState(stateId: String): Thing =
     this.copy(states = this.states + stateId)
 
-  def withSound(soundId: Int): Thing =
+  def withSound(soundId: String): Thing =
     this.copy(sounds = this.sounds + soundId)
 }

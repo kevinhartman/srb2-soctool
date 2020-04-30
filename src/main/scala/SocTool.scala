@@ -16,7 +16,12 @@ object SocTool extends App {
   val entityId = argValue(Set("--id", "-d"))
   val action = argValue(Set("--action", "-a"))
   val socFile = argValue(Set("--soc", "-s"))
+  //val thingFreeslot = argValue(Set("--thing-freeslot"))
+
+  val fromOld = argFlag(Set("--from-old-srb2"))
   val toLua = argFlag(Set("--to-lua", "-l"))
+  val portable = argFlag(Set("--portable", "-p"))
+  val genFreeSlots = argFlag(Set("--freeslots", "-f"))
 
   def loadFile(): Option[Source] = {
     val file = socFile.map(fileName => Source.fromFile(fileName))
@@ -25,7 +30,7 @@ object SocTool extends App {
 
   def doExtract(): Unit = {
     val entity = entityType.getOrElse(error("Missing entity type"))
-    val id = entityId.getOrElse(error("Missing entity id")).toInt
+    val id = entityId.getOrElse(error("Missing entity id"))
 
     val extracted = loadFile() match {
       case Some(file) =>
@@ -34,12 +39,35 @@ object SocTool extends App {
 
         entity.toUpperCase match {
           case "THING" => script.extractThing(id)
-          case "LEVEL" => script.extractLevel(id)
+          case "LEVEL" => {
+            if (toLua) error("Levels cannot be represented in Lua.")
+
+            script.extractLevel(id)
+          }
           case "STATE" => script.extractState(id)
           case "SOUND" => script.extractSound(id)
         }
       case None => error("SOC file not found")
     }
+
+    // TODO: there are requirements for these names for length
+    val ported = if (portable) MakePortable(
+      SlotRenameRules(
+        thingId = id => Some(s"MT_$id"),
+        stateId = id => Some(s"S_$id"),
+        soundId = id => Some(s"sfx_$id"),
+        spriteId = id => {
+          val newId = "0" * (4 - id.length) + id
+
+          if (newId.length > 4)
+            error("Currently, generating SFX names for IDs longer than 4 digits is not supported.")
+
+          Some(s"SPR_$newId")
+        }
+      )
+    )(extracted) else extracted
+
+    val genSlots = if (genFreeSlots) GenerateFreeSlots(ported) else ported
 
     val print: SocScript => Unit = if (toLua)
       PrintAsLua(PrinterConfig())
@@ -47,7 +75,7 @@ object SocTool extends App {
       PrintAsSoc(PrinterConfig())
 
     /* print extracted blocks to stdout */
-    print(extracted)
+    print(genSlots)
   }
 
   action.map(_.toLowerCase) match {

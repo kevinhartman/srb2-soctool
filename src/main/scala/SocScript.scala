@@ -7,25 +7,32 @@ case class Entry[T](
   entity: T
 )
 
+case class FreeSlot(slotId: String)
+
 case class SocScript(
-  levels: Map[Int, Entry[Level]] = Map(),
-  things: Map[Int, Entry[Thing]] = Map(),
-  states: Map[Int, Entry[State]] = Map(),
-  sounds: Map[Int, Entry[Sound]] = Map()
+  freeSlots: Set[FreeSlot] = Set(),
+  levels: Map[String, Entry[Level]] = Map(),
+  things: Map[String, Entry[Thing]] = Map(),
+  states: Map[String, Entry[State]] = Map(),
+  sounds: Map[String, Entry[Sound]] = Map()
 ) {
-  def withLevel(entityId: Int, level: Entry[Level]): SocScript =
+  def withFreeSlot(slot: FreeSlot): SocScript = {
+    this.copy(freeSlots = this.freeSlots + slot)
+  }
+
+  def withLevel(entityId: String, level: Entry[Level]): SocScript =
     this.copy(levels = this.levels + (entityId -> level))
 
-  def withThing(entityId: Int, thing: Entry[Thing]): SocScript =
+  def withThing(entityId: String, thing: Entry[Thing]): SocScript =
     this.copy(things = this.things + (entityId -> thing))
 
-  def withState(entityId: Int, state: Entry[State]): SocScript =
+  def withState(entityId: String, state: Entry[State]): SocScript =
     this.copy(states = this.states + (entityId -> state))
 
-  def withSound(entityId: Int, sound: Entry[Sound]): SocScript =
+  def withSound(entityId: String, sound: Entry[Sound]): SocScript =
     this.copy(sounds = this.sounds + (entityId -> sound))
 
-  def extractLevel(id: Int, result: SocScript = SocScript()): SocScript = {
+  def extractLevel(id: String, result: SocScript = SocScript()): SocScript = {
     levels.get(id) match {
       case Some(levelEntry) if !result.levels.contains(id) =>
         result.withLevel(id, levelEntry)
@@ -36,7 +43,7 @@ case class SocScript(
     }
   }
 
-  def extractThing(id: Int, result: SocScript = SocScript()): SocScript = {
+  def extractThing(id: String, result: SocScript = SocScript()): SocScript = {
     things.get(id) match {
       case Some(thingEntry) if !result.things.contains(id) =>
         val withThing: SocScript = result.withThing(id, thingEntry)
@@ -57,7 +64,7 @@ case class SocScript(
     }
   }
 
-  def extractState(id: Int, result: SocScript = SocScript()): SocScript = {
+  def extractState(id: String, result: SocScript = SocScript()): SocScript = {
     states.get(id) match {
       case Some(stateEntry) if !result.states.contains(id) =>
         val withState = result.withState(id, stateEntry)
@@ -74,7 +81,7 @@ case class SocScript(
     }
   }
 
-  def extractSound(id: Int, result: SocScript = SocScript()): SocScript = {
+  def extractSound(id: String, result: SocScript = SocScript()): SocScript = {
     sounds.get(id) match {
       case Some(soundEntry) if !result.sounds.contains(id) =>
         result.withSound(id, soundEntry)

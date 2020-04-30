@@ -6,21 +6,21 @@ object SoundBlock extends Block[Sound] {
   import Line.{KeyExactly, EqualsDelimiter}
   object HeaderLine extends Block.HeaderLine("SOUND")
 
-  object SingularLine extends Line.Distinct[Int]
+  object SingularLine extends Line.Distinct[String]
     with EqualsDelimiter
     with KeyExactly
   {
     override val keyName: String = "SINGULAR"
   }
 
-  object PriorityLine extends Line.Distinct[Int]
+  object PriorityLine extends Line.Distinct[String]
     with EqualsDelimiter
     with KeyExactly
   {
     override val keyName: String = "PRIORITY"
   }
 
-  object FlagsLine extends Line.Distinct[Int]
+  object FlagsLine extends Line.Distinct[String]
     with EqualsDelimiter
     with KeyExactly
   {

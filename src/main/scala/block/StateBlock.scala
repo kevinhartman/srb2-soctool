@@ -5,7 +5,7 @@ import model.State
 object StateBlock extends Block[State] {
   import Line.{KeyExactly, EqualsDelimiter, SpaceDelimiter, KeyIn, WellDefinedKey}
 
-  object HeaderLine extends Line.Distinct[Int]
+  object HeaderLine extends Line.Distinct[String]
     with SpaceDelimiter
     with KeyIn
     with WellDefinedKey
@@ -14,7 +14,7 @@ object StateBlock extends Block[State] {
     override val keys: Set[String] = Set("Frame", "FRAME", "State", "STATE")
   }
 
-  object NextLine extends Line.Distinct[Int]
+  object NextLine extends Line.Distinct[String]
     with EqualsDelimiter
     with KeyExactly
   {
@@ -28,35 +28,35 @@ object StateBlock extends Block[State] {
     override val keyName: String = "ACTION"
   }
 
-  object SpriteNumberLine extends Line.Distinct[Int]
+  object SpriteNumberLine extends Line.Distinct[String]
     with EqualsDelimiter
     with KeyExactly
   {
     override val keyName: String = "SPRITENUMBER"
   }
 
-  object SpriteSubNumberLine extends Line.Distinct[Int]
+  object SpriteSubNumberLine extends Line.Distinct[String]
     with EqualsDelimiter
     with KeyExactly
   {
     override val keyName: String = "SPRITESUBNUMBER"
   }
 
-  object DurationLine extends Line.Distinct[Int]
+  object DurationLine extends Line.Distinct[String]
     with EqualsDelimiter
     with KeyExactly
   {
     override val keyName: String = "DURATION"
   }
 
-  object Var1Line extends Line.Distinct[Int]
+  object Var1Line extends Line.Distinct[String]
     with EqualsDelimiter
     with KeyExactly
   {
     override val keyName: String = "VAR1"
   }
 
-  object Var2Line extends Line.Distinct[Int]
+  object Var2Line extends Line.Distinct[String]
     with EqualsDelimiter
     with KeyExactly
   {

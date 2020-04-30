@@ -13,56 +13,56 @@ object LevelBlock extends Block[Level] {
     override val keyName: String = "LEVELNAME"
   }
 
-  object NextLevelLine extends Line.Distinct[Int]
+  object NextLevelLine extends Line.Distinct[String]
     with EqualsDelimiter
     with KeyExactly
   {
     override val keyName: String = "NEXTLEVEL"
   }
 
-  object MusicSlotLine extends Line.Distinct[Int]
+  object MusicSlotLine extends Line.Distinct[String]
     with EqualsDelimiter
     with KeyExactly
   {
     override val keyName: String = "MUSICSLOT"
   }
 
-  object WeatherLine extends Line.Distinct[Int]
+  object WeatherLine extends Line.Distinct[String]
     with EqualsDelimiter
     with KeyExactly
   {
     override val keyName: String = "WEATHER"
   }
 
-  object SkyNumLine extends Line.Distinct[Int]
+  object SkyNumLine extends Line.Distinct[String]
     with EqualsDelimiter
     with KeyExactly
   {
     override val keyName: String = "SKYNUM"
   }
 
-  object NoZoneLine extends Line.Distinct[Int]
+  object NoZoneLine extends Line.Distinct[String]
     with EqualsDelimiter
     with KeyExactly
   {
     override val keyName: String = "NOZONE"
   }
 
-  object NoSSMusicLine extends Line.Distinct[Int]
+  object NoSSMusicLine extends Line.Distinct[String]
     with EqualsDelimiter
     with KeyExactly
   {
     override val keyName: String = "NOSSMUSIC"
   }
 
-  object LevelSelectLine extends Line.Distinct[Int]
+  object LevelSelectLine extends Line.Distinct[String]
     with EqualsDelimiter
     with KeyExactly
   {
     override val keyName: String = "LEVELSELECT"
   }
 
-  object TypeOfLevelLine extends Line.Distinct[Int]
+  object TypeOfLevelLine extends Line.Distinct[String]
     with EqualsDelimiter
     with KeyExactly
   {

@@ -5,6 +5,15 @@ object PrintAsLua {
   def apply(config: PrinterConfig)(socScript: SocScript): Unit = {
     def printProp(prop: String) = println(s"    $prop")
 
+    if (socScript.freeSlots.nonEmpty) {
+      println("freeslots(")
+      val sorted = socScript.freeSlots.map(_.slotId).toIndexedSeq.sorted(Ordering[String].reverse)
+      sorted.tails.toSeq.drop(1).headOption.toSeq.flatten.reverse.foreach(s => printProp(s"$s,"))
+      printProp(sorted.head)
+      println(")")
+      println()
+    }
+
     socScript.things.values.filter(config.thingFilter).foreach(entry => {
       val thing = entry.entity
 

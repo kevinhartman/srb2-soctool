@@ -1,14 +1,14 @@
 package model
 
 case class Level(
-  id: Int,
+  id: String,
   levelName: Option[String] = None,
-  nextLevel: Option[Int] = None,
-  musicSlot: Option[Int] = None,
-  weather: Option[Int] = None,
-  skyNum: Option[Int] = None,
-  noZone: Option[Int] = None,
-  noSSMusic: Option[Int] = None,
-  levelSelect: Option[Int] = None,
-  typeOfLevel: Option[Int] = None
+  nextLevel: Option[String] = None,
+  musicSlot: Option[String] = None,
+  weather: Option[String] = None,
+  skyNum: Option[String] = None,
+  noZone: Option[String] = None,
+  noSSMusic: Option[String] = None,
+  levelSelect: Option[String] = None,
+  typeOfLevel: Option[String] = None
 )
