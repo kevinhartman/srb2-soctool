@@ -6,10 +6,10 @@ object PrintAsLua {
     def printProp(prop: String) = println(s"    $prop")
 
     if (socScript.freeSlots.nonEmpty) {
-      println("freeslots(")
+      println("freeslot(")
       val sorted = socScript.freeSlots.map(_.slotId).toIndexedSeq.sorted(Ordering[String].reverse)
-      sorted.tails.toSeq.drop(1).headOption.toSeq.flatten.reverse.foreach(s => printProp(s"$s,"))
-      printProp(sorted.head)
+      sorted.tails.toSeq.drop(1).headOption.toSeq.flatten.reverse.foreach(s => printProp("\"" + s + "\","))
+      printProp("\"" + sorted.head + "\"")
       println(")")
       println()
     }
