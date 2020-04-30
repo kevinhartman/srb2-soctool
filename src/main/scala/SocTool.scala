@@ -20,11 +20,17 @@ object SocTool extends App {
   def argFlag(argNames: Set[String]): Boolean =
     args.dropWhile(arg => !argNames.contains(arg)).nonEmpty
 
-  val entityType = argValue(Set("--type", "-t"))
-  val entityId = argValue(Set("--id", "-d"))
+  def toIdList(arg: Option[String]) = {
+    arg.getOrElse("").split(',').filter(_.nonEmpty)
+  }
+
+  val things = toIdList(argValue(Set("--thing-ids")))
+  val states = toIdList(argValue(Set("--state-ids")))
+  val sounds = toIdList(argValue(Set("--sound-ids")))
+  val levels = toIdList(argValue(Set("--level-ids")))
+
   val action = argValue(Set("--action", "-a"))
   val socFile = argValue(Set("--soc", "-s"))
-  //val thingFreeslot = argValue(Set("--thing-freeslot"))
 
   val fromOld = argFlag(Set("--from-old-srb2"))
   val toLua = argFlag(Set("--to-lua", "-l"))
@@ -37,23 +43,21 @@ object SocTool extends App {
   }
 
   def doExtract(): Unit = {
-    val entity = entityType.getOrElse(error("Missing entity type"))
-    val id = entityId.getOrElse(error("Missing entity id"))
-
     val extracted = loadFile() match {
       case Some(file) =>
         val lines = file.getLines()
         val script = SocScript(lines.toSeq)
 
-        entity.toUpperCase match {
-          case "THING" => script.extractThing(id)
-          case "LEVEL" => {
-            if (toLua) error("Levels cannot be represented in Lua.")
+        if (Seq(things, states, sounds, levels).forall(_.isEmpty))
+          // Return all if no filters.
+          script
+        else {
+          val withThings = things.foldLeft(SocScript())((soc, id) => script.extractThing(id, soc))
+          val withStates = states.foldLeft(withThings)((soc, id) => script.extractState(id, soc))
+          val withSounds = sounds.foldLeft(withStates)((soc, id) => script.extractSound(id, soc))
+          val withLevels = levels.foldLeft(withSounds)((soc, id) => script.extractLevel(id, soc))
 
-            script.extractLevel(id)
-          }
-          case "STATE" => script.extractState(id)
-          case "SOUND" => script.extractSound(id)
+          withLevels
         }
       case None => error("SOC file not found")
     }
