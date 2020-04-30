@@ -57,22 +57,32 @@ object MakePortable {
 
     val patchStates: Map[String, Entry[State]] = socScript.states.values.map (entry => {
       val state = entry.entity
-      entry.copy(entity = state.copy(
-        id = slotRenameRules.stateId(state.id).getOrElse(state.id),
-        next = patchState(state.next),
-        spriteNumber = patchSprite(state.spriteNumber),
-        var1 = state.action match {
-          case Some("A_FindTarget") => patchThing(state.var1)
-          case Some("A_OldRingExplode") => patchThing(state.var1)
-          case _ => state.var1
-        },
-        var2 = state.action match {
-          case Some("A_SpawnObjectRelative") => patchThing(state.var2)
-          case Some("A_BossScream") => patchThing(state.var2)
-          case _ => state.var2
-        }
-      ))}
-    ).map(entry => (entry.entity.id, entry))(breakOut)
+
+      val patchedSprite = patchSprite(state.spriteNumber)
+      val warnings = patchedSprite match {
+        case Some(patchedId) => entry.warnings :+ s"sprite freeslot '$patchedId' migrated from slot ${state.spriteNumber.get}"
+        case None => entry.warnings
+      }
+
+      entry.copy(
+        warnings = warnings,
+        entity = state.copy(
+          id = slotRenameRules.stateId(state.id).getOrElse(state.id),
+          next = patchState(state.next),
+          spriteNumber = patchSprite(state.spriteNumber),
+          var1 = state.action match {
+            case Some("A_FindTarget") => patchThing(state.var1)
+            case Some("A_OldRingExplode") => patchThing(state.var1)
+            case _ => state.var1
+          },
+          var2 = state.action match {
+            case Some("A_SpawnObjectRelative") => patchThing(state.var2)
+            case Some("A_BossScream") => patchThing(state.var2)
+            case _ => state.var2
+          }
+        )
+      )
+    }).map(entry => (entry.entity.id, entry))(breakOut)
 
     socScript.copy(things = patchThings, states = patchStates, sounds = patchSounds)
   }
