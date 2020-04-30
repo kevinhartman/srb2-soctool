@@ -1,4 +1,5 @@
 import scala.io.Source
+import scala.util.{Success, Try}
 
 // TODO:
 //  - Filters should ideally recurse through var1 and var2 references to other objects
@@ -35,6 +36,7 @@ object SocTool extends App {
   val fromOld = argFlag(Set("--from-old-srb2"))
   val toLua = argFlag(Set("--to-lua", "-l"))
   val portable = argFlag(Set("--portable", "-p"))
+  val freeslotPrefix = argValue(Set("--freeslot-prefix")).getOrElse("")
   val genFreeSlots = argFlag(Set("--freeslots", "-f"))
 
   def loadFile(): Option[Source] = {
@@ -62,20 +64,34 @@ object SocTool extends App {
       case None => error("SOC file not found")
     }
 
-    // TODO: there are requirements for these names for length
+    def adjustHardcodedSlot(adjustment: Int => String)(id: String): Option[String] = {
+      Try(id.toInt) match {
+        case Success(numericId) => Some(adjustment(numericId))
+        case _ => None
+      }
+    }
+
+    def generateSlotName(hardcodedSlot: Int, maxLength: Int, minLength: Int = 0, radix: Int = 10) = {
+      val asBigInt: BigInt = hardcodedSlot
+      val radixEncodedId = asBigInt.toString(radix)
+
+      if (radixEncodedId.length > maxLength)
+        error("Hardcoded slot ID is too big to be auto-converted to freeslot name.")
+
+      val prefix = freeslotPrefix.take(maxLength - radixEncodedId.length)
+      val pad = "0" * (minLength - (prefix.length + radixEncodedId.length)) // Negative is ok!
+
+      (prefix + pad + radixEncodedId).toUpperCase
+    }
+
     val ported = if (portable) MakePortable(
       SlotRenameRules(
-        thingId = id => Some(s"MT_$id"),
-        stateId = id => Some(s"S_$id"),
-        soundId = id => Some(s"sfx_$id"),
-        spriteId = id => {
-          val newId = "0" * (4 - id.length) + id
-
-          if (newId.length > 4)
-            error("Currently, generating SFX names for IDs longer than 4 digits is not supported.")
-
-          Some(s"SPR_$newId")
-        }
+        thingId = id => adjustHardcodedSlot(s => s"MT_${generateSlotName(s, 20)}")(id),
+        stateId = id => adjustHardcodedSlot(s => s"S_${generateSlotName(s, 20)}")(id),
+        soundId = id => adjustHardcodedSlot(s => s"sfx_${generateSlotName(s, 6).toLowerCase}")(id),
+        spriteId = id =>
+          // Note: sprite IDs get base-36 encoded since they're only allowed to be 4 chars long!
+          adjustHardcodedSlot(s => s"SPR_${generateSlotName(s, 4, minLength = 4, radix = 36)}")(id)
       )
     )(extracted) else extracted
 
@@ -89,7 +105,7 @@ object SocTool extends App {
     /* print extracted blocks to stdout */
     print(genSlots)
   }
-
+  
   action.map(_.toLowerCase) match {
     case Some("extract") => doExtract()
     case None => error("missing entity type")
