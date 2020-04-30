@@ -5,7 +5,7 @@ object PrintAsSoc {
   def apply(config: PrinterConfig)(socScript: SocScript): Unit = {
     if (socScript.freeSlots.nonEmpty) {
       println("Freeslot")
-      socScript.freeSlots.foreach(println)
+      socScript.freeSlots.map(_.slotId).toSeq.sorted.foreach(println)
       println()
     }
 
