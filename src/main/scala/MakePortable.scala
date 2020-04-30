@@ -62,6 +62,7 @@ object MakePortable {
         next = patchState(state.next),
         spriteNumber = patchSprite(state.spriteNumber),
         var1 = state.action match {
+          case Some("A_FindTarget") => patchThing(state.var1)
           case Some("A_OldRingExplode") => patchThing(state.var1)
           case _ => state.var1
         },
