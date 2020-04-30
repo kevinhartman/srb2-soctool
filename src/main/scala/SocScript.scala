@@ -32,13 +32,16 @@ case class SocScript(
   def withSound(entityId: String, sound: Entry[Sound]): SocScript =
     this.copy(sounds = this.sounds + (entityId -> sound))
 
+  // TODO: when an entity is not found, it'd be possible to include it in a missing
+  //       reference list of some sort.
+
   def extractLevel(id: String, result: SocScript = SocScript()): SocScript = {
     levels.get(id) match {
       case Some(levelEntry) if !result.levels.contains(id) =>
         result.withLevel(id, levelEntry)
       case Some(_) => result // already processed
       case None =>
-        if (id != "0") println(s"* Warning: Level $id not found in script.")
+        if (id != "0") System.err.println(s"* Warning: Level $id not found in script.")
         result
     }
   }
@@ -59,7 +62,7 @@ case class SocScript(
         withSounds
       case Some(_) => result // already processed
       case None =>
-        if (id != "0") println(s"* Warning: Thing $id not found in script.")
+        if (id != "0") System.err.println(s"* Warning: Thing $id not found in script.")
         result
     }
   }
@@ -76,7 +79,7 @@ case class SocScript(
         }
       case Some(_) => result // already processed
       case _ =>
-        if (id != "0") println(s"* Warning: State $id not found in script.")
+        if (id != "0") System.err.println(s"* Warning: State $id not found in script.")
         result
     }
   }
@@ -87,7 +90,7 @@ case class SocScript(
         result.withSound(id, soundEntry)
       case Some(_) => result // already processed
       case _ =>
-        if (id != "0") println(s"* Warning: Sound $id not found in script.")
+        if (id != "0") System.err.println(s"* Warning: Sound $id not found in script.")
         result
     }
   }
@@ -122,8 +125,8 @@ object SocScript {
           SocScript()
       // case Seq(comment) if isComment(comment)=> // TODO: test that this line isn't needed
       case _ =>
-          print(s"Failed to parse block: $block")
-          throw new Exception("Unknown block.")
+        System.err.println(s"Failed to parse block: $block")
+        throw new Exception("Unknown block.")
     }
   }
 
