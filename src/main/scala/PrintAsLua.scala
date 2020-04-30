@@ -3,6 +3,10 @@ import block._
 
 object PrintAsLua {
   def apply(config: PrinterConfig)(socScript: SocScript): Unit = {
+    def printWarnings[T](entry: Entry[T]) = {
+      entry.warnings.foreach(w => println(s"-- info: $w"))
+    }
+
     def printProp(prop: String) = println(s"    $prop")
 
     if (socScript.freeSlots.nonEmpty) {
@@ -17,6 +21,7 @@ object PrintAsLua {
     socScript.things.values.filter(config.thingFilter).foreach(entry => {
       val thing = entry.entity
 
+      printWarnings(entry)
       println(s"mobjinfo[${thing.id}] = {")
       thing.mapThingNum.map(s => s"doomednum = $s,").foreach(printProp)
       thing.spawnState.map(s => s"spawnstate = $s,").foreach(printProp)
@@ -49,6 +54,7 @@ object PrintAsLua {
     socScript.states.values.filter(config.stateFilter).foreach(entry => {
       val state = entry.entity
 
+      printWarnings(entry)
       println(s"states[${state.id}] = {")
       state.spriteNumber.map(s => s"sprite = $s,").foreach(printProp)
       state.spriteSubNumber.map(s => s"frame = $s,").foreach(printProp)
@@ -64,6 +70,7 @@ object PrintAsLua {
     socScript.sounds.values.filter(config.soundFilter).foreach(entry => {
       val sound = entry.entity
 
+      printWarnings(entry)
       println(s"S_sfx[${sound.id}] = {")
       sound.singular.map(s => s"singular = $s,").foreach(printProp)
       sound.priority.map(s => s"priority = $s,").foreach(printProp)

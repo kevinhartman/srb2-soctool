@@ -4,6 +4,7 @@ import block._
 case class Entry[T](
   offset: Int,
   length: Int,
+  warnings: List[String],
   entity: T
 )
 
@@ -108,7 +109,7 @@ object SocScript {
     def nextBlock = readScript(unread)
 
     val offset = indexedLines.headOption.map(_._2)
-    def entry[T](entity: T) = Entry(offset.get, block.length, entity)
+    def entry[T](entity: T) = Entry(offset.get, block.length, List(), entity)
 
     block match {
       case Seq(comment, _*) if isComment(comment) => readScript(indexedLines.drop(1)) /* skip comment */
