@@ -10,12 +10,23 @@ case class Entry[T](
 
 case class FreeSlot(slotId: String)
 
+case class Dependencies(
+  externFreeslots: Set[String] = Set(),
+  externStates: Set[String] = Set(),
+  externObjects: Set[String] = Set(),
+  spriteFiles: Set[String] = Set(),
+  soundsFiles: Set[String] = Set(),
+  lineDefs: Set[String] = Set()
+)
+
 case class SocScript(
   freeSlots: Set[FreeSlot] = Set(),
   levels: Map[String, Entry[Level]] = Map(),
   things: Map[String, Entry[Thing]] = Map(),
   states: Map[String, Entry[State]] = Map(),
-  sounds: Map[String, Entry[Sound]] = Map()
+  sounds: Map[String, Entry[Sound]] = Map(),
+
+  dependencies: Dependencies = Dependencies()
 ) {
   def withFreeSlot(slot: FreeSlot): SocScript = {
     this.copy(freeSlots = this.freeSlots + slot)

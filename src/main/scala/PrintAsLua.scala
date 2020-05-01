@@ -1,13 +1,37 @@
-import block.LevelBlock
-import block._
-
 object PrintAsLua {
   def apply(config: PrinterConfig)(socScript: SocScript): Unit = {
+    def printDependency(dep: String) = println(s"- $dep")
+
+    def printDependencies() = {
+      println("--[[")
+      println("Dependencies")
+      println()
+      println("Required sound files:")
+      socScript.dependencies.soundsFiles.foreach(printDependency)
+      println()
+      println("Required sprite files (see https://wiki.srb2.org/wiki/Sprite for info on rotation):")
+      socScript.dependencies.spriteFiles.foreach(printDependency)
+      println()
+      println("External Object Types")
+      socScript.dependencies.externObjects.foreach(printDependency)
+      println()
+      println("External States")
+      socScript.dependencies.externStates.foreach(printDependency)
+      println()
+      println("Linedef Executors ")
+      socScript.dependencies.lineDefs.foreach(printDependency)
+      println()
+      println("--]]")
+      println()
+    }
+
     def printWarnings[T](entry: Entry[T]) = {
       entry.warnings.foreach(w => println(s"-- info: $w"))
     }
 
     def printProp(prop: String) = println(s"    $prop")
+
+    printDependencies()
 
     if (socScript.freeSlots.nonEmpty) {
       println("freeslot(")

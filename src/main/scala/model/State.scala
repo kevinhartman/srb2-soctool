@@ -8,5 +8,40 @@ case class State(
   next: Option[String] = None,
   action: Option[String] = None,
   var1: Option[String] = None,
-  var2: Option[String] = None
-)
+  var2: Option[String] = None,
+) {
+  def Var1AsThing(): Option[String] = {
+    val actions = Seq(
+      "A_FindTarget",
+      "A_OldRingExplode"
+    )
+
+    action match {
+      case Some(a) => if (actions.contains(a)) var1 else None
+      case None => None
+    }
+  }
+
+  def Var1AsLinedefExecutor(): Option[String] = {
+    val actions = Seq(
+      "A_LinedefExecute"
+    )
+
+    action match {
+      case Some(a) => if (actions.contains(a)) var1 else None
+      case None => None
+    }
+  }
+
+  def Var2AsThing(): Option[String] = {
+    val actions = Seq(
+      "A_SpawnObjectRelative",
+      "A_BossScream"
+    )
+
+    action match {
+      case Some(a) => if (actions.contains(a)) var2 else None
+      case None => None
+    }
+  }
+}
