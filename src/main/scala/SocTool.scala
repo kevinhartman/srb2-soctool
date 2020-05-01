@@ -2,15 +2,12 @@ import scala.io.Source
 import scala.util.{Success, Try}
 
 // TODO:
-//  - Add "describe" mode, which should add a Lua comment describing identified external
-//    dependencies: freeslot declarations, object types, sprites, sounds, states, linedefs.
 //  - Add support to read Freeslot declarations from SOCs
 //  - Filters should ideally recurse through var1 and var2 references to other objects
 //  - Currently, we just replace var1 and var2 value with the generated name if we are
 //    in port mode. This isn't correct in cases where a variable has upper bits used
 //    for something else (e.g. A_SpawnObjectRelative's var2 has lower 16 bits for object
 //    name). In port mode, when convertible to Int, we should isolate lower 16 and emit Upper16 | MT_<id>.
-//  - We should only port var1 and var2 if we upgraded their targets in this filter, possibly.
 //  - Support comments in SOC.
 //  - Add help text and readme.
 //  - Add option to try to follow action variables
@@ -18,6 +15,8 @@ import scala.util.{Success, Try}
 //  - Add option to convert some fields into terms of frac units and flags.
 //  - Add upgrade option to attempt to migrate old actions to new versions
 //  - Support port ID patching for more action types (var1 and var2)
+//  - Add external sound dependencies to listing.
+//  - Print dependencies for SOC format.
 
 object SocTool extends App {
 
@@ -106,8 +105,7 @@ object SocTool extends App {
       )
     )(extracted) else extracted
 
-    val genSlots = if (genFreeSlots) GenerateFreeSlots(ported) else ported
-    val withDependencyInfo = WithDependencyInfo(genSlots)
+    val withDependencyInfo = BuildDependencyInfo(ported)
 
     val print: SocScript => Unit = if (toLua)
       PrintAsLua(PrinterConfig())
@@ -118,8 +116,5 @@ object SocTool extends App {
     print(withDependencyInfo)
   }
 
-  action.map(_.toLowerCase) match {
-    case Some("extract") => doExtract()
-    case None => error("missing entity type")
-  }
+  doExtract()
 }

@@ -1,6 +1,6 @@
 import scala.util.Try
 
-object WithDependencyInfo {
+object BuildDependencyInfo {
   def apply(socScript: SocScript): SocScript = {
     def isHardcoded(id: String) = Try(id.toInt).isSuccess
 
@@ -23,34 +23,36 @@ object WithDependencyInfo {
       s"${id.drop(4)}$frameId<rotation>"
     }
 
-    val processThings = socScript.things.values.map(_.entity).foldLeft(Dependencies())((deps, thing) => {
+    val things = socScript.things.values.map(_.entity)
+    val states = socScript.states.values.map(_.entity)
+    val sounds = socScript.sounds.values.map(_.entity)
+
+    val processThings = things.foldLeft(Dependencies())((deps, thing) => {
       deps.copy(
-        externFreeslots = deps.externFreeslots ++ Seq(thing.id)
-          .filterNot(isHardcoded)
-          .filterNot(id => socScript.freeSlots.contains(FreeSlot(id))),
-
-        externStates = deps.externStates ++ thing.states.filterNot(id => socScript.states.contains(id)),
-
+        externStates = deps.externStates ++ thing.states.filterNot(socScript.states.contains).filterNot(_ == "0"),
         soundsFiles = deps.soundsFiles ++ thing.sounds.filterNot(isHardcoded).map(soundName)
       )
     })
 
-    val processStates = socScript.states.values.map(_.entity).foldLeft(processThings)((deps, state) => {
+    val processStates = states.foldLeft(processThings)((deps, state) => {
       deps.copy(
-        externStates = deps.externStates ++ state.next.filterNot(id => socScript.states.contains(id)),
+        externStates = deps.externStates ++ state.next.filterNot(socScript.states.contains).filterNot(_ == "0"),
+        externSprites = deps.externSprites ++ state.spriteNumber
+          .filterNot(id => socScript.freeSlots.contains(id) || !isHardcoded(id)),
         spriteFiles = deps.spriteFiles ++ state.spriteNumber
+          .filterNot(isHardcoded)
           .map(spriteName(_, state.spriteSubNumber.getOrElse("0"))),
         externObjects = deps.externObjects
-          ++ state.Var1AsThing().filterNot(id => socScript.things.contains(id))
-          ++ state.Var2AsThing().filterNot(id => socScript.things.contains(id)),
+          ++ state.Var1AsThing().filterNot(socScript.things.contains)
+          ++ state.Var2AsThing().filterNot(socScript.things.contains),
         lineDefs = deps.lineDefs ++ state.Var1AsLinedefExecutor()
       )
     })
 
-    val processSounds = socScript.sounds.values.map(_.entity).foldLeft(processStates)((deps, sound) => {
-      deps.copy(
-        soundsFiles = deps.soundsFiles + soundName(sound.id)
-      )
+    val processSounds = sounds.filterNot(e => isHardcoded(e.id)).foldLeft(processStates)((deps, sound) => {
+        deps.copy(
+          soundsFiles = deps.soundsFiles + soundName(sound.id)
+        )
     })
 
     socScript.copy(dependencies = processSounds)

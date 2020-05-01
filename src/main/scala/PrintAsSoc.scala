@@ -9,7 +9,7 @@ object PrintAsSoc {
 
     if (socScript.freeSlots.nonEmpty) {
       println("Freeslot")
-      socScript.freeSlots.map(_.slotId).toSeq.sorted.foreach(println)
+      socScript.freeSlots.toSeq.sorted.foreach(println)
       println()
     }
 

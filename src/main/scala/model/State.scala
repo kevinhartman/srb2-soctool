@@ -11,6 +11,8 @@ case class State(
   var2: Option[String] = None,
 ) {
   def Var1AsThing(): Option[String] = {
+    if (var1.contains("0")) return None
+
     val actions = Seq(
       "A_FindTarget",
       "A_OldRingExplode"
@@ -23,6 +25,8 @@ case class State(
   }
 
   def Var1AsLinedefExecutor(): Option[String] = {
+    if (var1.contains("0")) return None
+
     val actions = Seq(
       "A_LinedefExecute"
     )
@@ -34,6 +38,8 @@ case class State(
   }
 
   def Var2AsThing(): Option[String] = {
+    if (var2.contains("0")) return None
+
     val actions = Seq(
       "A_SpawnObjectRelative",
       "A_BossScream"

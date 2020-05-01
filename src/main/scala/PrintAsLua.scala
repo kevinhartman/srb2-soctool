@@ -3,7 +3,7 @@ object PrintAsLua {
     def printDependency(dep: String) = println(s"- $dep")
 
     def printDependencies() = {
-      println("--[[")
+      println("/*")
       println("Dependencies")
       println()
       println("Required sound files:")
@@ -12,16 +12,19 @@ object PrintAsLua {
       println("Required sprite files (see https://wiki.srb2.org/wiki/Sprite for info on rotation):")
       socScript.dependencies.spriteFiles.foreach(printDependency)
       println()
-      println("External Object Types")
-      socScript.dependencies.externObjects.foreach(printDependency)
-      println()
-      println("External States")
-      socScript.dependencies.externStates.foreach(printDependency)
-      println()
-      println("Linedef Executors ")
+      println("Linedef executors:")
       socScript.dependencies.lineDefs.foreach(printDependency)
       println()
-      println("--]]")
+      println("External object references:")
+      socScript.dependencies.externObjects.foreach(printDependency)
+      println()
+      println("External state references:")
+      socScript.dependencies.externStates.foreach(printDependency)
+      println()
+      println("External sprite references:")
+      socScript.dependencies.externSprites.foreach(printDependency)
+      println()
+      println("*/")
       println()
     }
 
@@ -35,7 +38,7 @@ object PrintAsLua {
 
     if (socScript.freeSlots.nonEmpty) {
       println("freeslot(")
-      val sorted = socScript.freeSlots.map(_.slotId).toIndexedSeq.sorted(Ordering[String].reverse)
+      val sorted = socScript.freeSlots.toIndexedSeq.sorted(Ordering[String].reverse)
       sorted.tails.toSeq.drop(1).headOption.toSeq.flatten.reverse.foreach(s => printProp("\"" + s + "\","))
       printProp("\"" + sorted.head + "\"")
       println(")")

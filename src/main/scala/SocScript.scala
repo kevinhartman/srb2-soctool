@@ -8,19 +8,17 @@ case class Entry[T](
   entity: T
 )
 
-case class FreeSlot(slotId: String)
-
 case class Dependencies(
-  externFreeslots: Set[String] = Set(),
   externStates: Set[String] = Set(),
   externObjects: Set[String] = Set(),
+  externSprites: Set[String] = Set(),
   spriteFiles: Set[String] = Set(),
   soundsFiles: Set[String] = Set(),
   lineDefs: Set[String] = Set()
 )
 
 case class SocScript(
-  freeSlots: Set[FreeSlot] = Set(),
+  freeSlots: Set[String] = Set(),
   levels: Map[String, Entry[Level]] = Map(),
   things: Map[String, Entry[Thing]] = Map(),
   states: Map[String, Entry[State]] = Map(),
@@ -28,7 +26,7 @@ case class SocScript(
 
   dependencies: Dependencies = Dependencies()
 ) {
-  def withFreeSlot(slot: FreeSlot): SocScript = {
+  def withFreeSlot(slot: String): SocScript = {
     this.copy(freeSlots = this.freeSlots + slot)
   }
 
