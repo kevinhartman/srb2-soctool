@@ -3,8 +3,8 @@ import scala.util.{Success, Try}
 
 // TODO:
 //  - Add support to read Freeslot declarations from SOCs
-//  - Print dependencies for SOC format.
 //  - Support input from STDIN.
+//  - Support latest SOC KV names in SOC input and output
 //  - Add no-recurse option
 //  - Currently, we just replace var1 and var2 value (if it's an int) with the generated name if we are
 //    in port mode. This isn't correct in cases where a variable has upper bits used
