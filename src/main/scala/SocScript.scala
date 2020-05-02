@@ -81,12 +81,12 @@ case class SocScript(
     states.get(id) match {
       case Some(stateEntry) if !result.states.contains(id) =>
         val withState = result.withState(id, stateEntry)
-        val withNextState = stateEntry.entity.next.map(extractState(_, withState))
+        val withNextState = stateEntry.entity.next.map(extractState(_, withState)).getOrElse(withState)
 
-        withNextState match {
-          case Some(next) => next
-          case None => withState
-        }
+        val withVar1Obj = stateEntry.entity.Var1AsThing().map(extractThing(_, withNextState)).getOrElse(withNextState)
+        val withVar2Obj = stateEntry.entity.Var2AsThing().map(extractThing(_, withVar1Obj)).getOrElse(withVar1Obj)
+
+        withVar2Obj
       case Some(_) => result // already processed
       case _ =>
         if (id != "0") System.err.println(s"* Warning: State $id not found in script.")
