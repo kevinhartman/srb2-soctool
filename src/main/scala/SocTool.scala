@@ -3,23 +3,29 @@ import scala.util.{Success, Try}
 
 // TODO:
 //  - Add support to read Freeslot declarations from SOCs
-//  - Filters should ideally recurse through var1 and var2 references to other objects
-//  - Currently, we just replace var1 and var2 value with the generated name if we are
+//  - Add external sound dependencies to listing.
+//  - Print dependencies for SOC format.
+//  - Support input from STDIN.
+//  - Add no-recurse option
+//  - Currently, we just replace var1 and var2 value (if it's an int) with the generated name if we are
 //    in port mode. This isn't correct in cases where a variable has upper bits used
 //    for something else (e.g. A_SpawnObjectRelative's var2 has lower 16 bits for object
 //    name). In port mode, when convertible to Int, we should isolate lower 16 and emit Upper16 | MT_<id>.
-//  - Support comments in SOC.
-//  - Add help text and readme.
-//  - Add option to try to follow action variables
-//  - Add no-recurse option
-//  - Add option to convert some fields into terms of frac units and flags.
-//  - Add upgrade option to attempt to migrate old actions to new versions
 //  - Support port ID patching for more action types (var1 and var2)
-//  - Add external sound dependencies to listing.
-//  - Print dependencies for SOC format.
 //  - Add option to suppress entry info comments.
+//  - Add help text.
+//  - Add attribution comment to output.
+//  - Support no-describe.
+//  - Support no-info.
+//  - Support no-attribution.
+//  ---
+//  Stretch
+//  - Support comments in SOC.
+//  - Add option to not recursively select through var1 and var2.
+//  - Add option to convert some fields into terms of frac units and flags.
 //  - Add flag to avoid upgrading referenced sprites.
 //  - Add option to force upgrade sounds even if they don't have a local definition.
+//  - It'd be cleaner to return None instead of 0 if a prop has a special case null val for 0 (most props)
 
 object SocTool extends App {
 
