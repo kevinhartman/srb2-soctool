@@ -12,6 +12,7 @@ case class Dependencies(
   externStates: Set[String] = Set(),
   externObjects: Set[String] = Set(),
   externSprites: Set[String] = Set(),
+  externSounds: Set[String] = Set(),
   spriteFiles: Set[String] = Set(),
   soundsFiles: Set[String] = Set(),
   lineDefs: Set[String] = Set()

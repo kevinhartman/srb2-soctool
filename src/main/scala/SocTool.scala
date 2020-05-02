@@ -3,7 +3,6 @@ import scala.util.{Success, Try}
 
 // TODO:
 //  - Add support to read Freeslot declarations from SOCs
-//  - Add external sound dependencies to listing.
 //  - Print dependencies for SOC format.
 //  - Support input from STDIN.
 //  - Add no-recurse option
@@ -18,6 +17,7 @@ import scala.util.{Success, Try}
 //  - Support no-describe.
 //  - Support no-info.
 //  - Support no-attribution.
+//  - Implement frame ID in required sprite file list.
 //  ---
 //  Stretch
 //  - Support comments in SOC.

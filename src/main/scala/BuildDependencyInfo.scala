@@ -30,6 +30,9 @@ object BuildDependencyInfo {
     val processThings = things.foldLeft(Dependencies())((deps, thing) => {
       deps.copy(
         externStates = deps.externStates ++ thing.states.filterNot(socScript.states.contains).filterNot(_ == "0"),
+        externSounds = deps.externSounds ++ thing.sounds.filterNot(socScript.sounds.contains).filterNot(_ == "0"),
+
+        // even if the sound is not declared locally, we can know its name if not hard-coded
         soundsFiles = deps.soundsFiles ++ thing.sounds.filterNot(isHardcoded).map(soundName)
       )
     })

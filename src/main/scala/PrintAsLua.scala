@@ -24,6 +24,9 @@ object PrintAsLua {
       println("External sprite references:")
       socScript.dependencies.externSprites.foreach(printDependency)
       println()
+      println("External sound references:")
+      socScript.dependencies.externSounds.foreach(printDependency)
+      println()
       println("*/")
       println()
     }
