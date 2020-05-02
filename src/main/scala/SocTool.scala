@@ -48,7 +48,6 @@ object SocTool extends App {
   val toLua = argFlag(Set("--to-lua", "-l"))
   val portable = argFlag(Set("--make-portable", "-p"))
   val freeslotPrefix = argValue(Set("--freeslot-prefix")).getOrElse("")
-  val genFreeSlots = argFlag(Set("--freeslots", "-f"))
 
   def loadFile(): Option[Source] = {
     val file = socFile.map(fileName => Source.fromFile(fileName))
