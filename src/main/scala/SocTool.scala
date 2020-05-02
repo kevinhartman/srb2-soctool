@@ -62,7 +62,9 @@ object SocTool extends App {
   val extracted = loadFile() match {
     case Some(file) =>
       val lines = file.getLines()
-      val script = SocScript(lines.toSeq)
+      var script = SocScript(lines.toSeq)
+
+      if (fromOld) script = Upgrade(script)
 
       if (Seq(things, states, sounds, levels).forall(_.isEmpty))
         // Return all if no filters.
