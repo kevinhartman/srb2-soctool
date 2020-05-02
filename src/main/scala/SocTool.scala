@@ -37,17 +37,22 @@ object SocTool extends App {
     arg.getOrElse("").split(',').filter(_.nonEmpty)
   }
 
-  val things = toIdList(argValue(Set("--thing-ids")))
-  val states = toIdList(argValue(Set("--state-ids")))
-  val sounds = toIdList(argValue(Set("--sound-ids")))
-  val levels = toIdList(argValue(Set("--level-ids")))
+  val noRecurse = argFlag(Set("--no-recurse", "-R"))
+  val things = toIdList(argValue(Set("--thing-ids", "-o")))
+  val states = toIdList(argValue(Set("--state-ids", "-s")))
+  val sounds = toIdList(argValue(Set("--sound-ids", "-d")))
+  val levels = toIdList(argValue(Set("--level-ids", "-l")))
 
-  val socFile = argValue(Set("--soc", "-s"))
+  val socFile = argValue(Set("--input-soc", "-i"))
 
-  val fromOld = argFlag(Set("--from-old-srb2"))
-  val toLua = argFlag(Set("--to-lua", "-l"))
+  val fromOld = argFlag(Set("--from-old-srb2", "-u"))
+  val toLua = argFlag(Set("--to-lua", "-S"))
   val portable = argFlag(Set("--make-portable", "-p"))
-  val freeslotPrefix = argValue(Set("--freeslot-prefix")).getOrElse("")
+  val freeslotPrefix = argValue(Set("--freeslot-prefix", "-f")).getOrElse("")
+
+  val noDescribe = argFlag(Set("--no-describe", "-D"))
+  val noInlineComments = argFlag(Set("--no-inline-comments", "-I"))
+  val noAttribution = argFlag(Set("--no-attribution", "-A"))
 
   def loadFile(): Option[Source] = {
     val file = socFile.map(fileName => Source.fromFile(fileName))
