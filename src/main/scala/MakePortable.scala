@@ -15,11 +15,23 @@ object MakePortable {
     val sounds = socScript.sounds.values.map(_.entity)
     val states = socScript.states.values.map(_.entity)
 
+    // This bit of code builds the list of generated freeslot names.
+    // References to hard-coded slots are only patched if their would-be ported
+    // name identifies one of these freeslots.
+    //
+    // The logic is:
+    //   - for things, states, and sounds, generate a freeslot if the original
+    //     slot ID is a hard-coded number.
+    //   - for sprites, generate a freeslot only if:
+    //       a) the sprite ID is hard-coded AND
+    //       b) at least one state using it was also declared with a hard-coded ID.
     val freeslots: Set[String] =
       things.flatMap(thing => slotRenameRules.thingId(thing.id)).toSet ++
       sounds.flatMap(sound => slotRenameRules.soundId(sound.id)) ++
       states.flatMap(state => slotRenameRules.stateId(state.id)) ++
-      states.flatMap(_.spriteNumber).flatMap(spriteId => slotRenameRules.spriteId(spriteId))
+      states.filter(state => slotRenameRules.stateId(state.id).isDefined)
+        .flatMap(_.spriteNumber)
+        .flatMap(spriteId => slotRenameRules.spriteId(spriteId))
 
     def patchProp(prop: Option[String], renameRule: String => Option[String]) = {
       prop.map(id => renameRule(id).filter(freeslots.contains).getOrElse(id))
