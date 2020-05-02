@@ -49,16 +49,16 @@ After porting SOC entities, be sure to examine the dependency listing to determi
 By default, the generated output includes a block comment listing of all external references and required assets ***for the selection***. If your selection does not include some dependencies from the original input SOC file, these will be listed as external references here, along with any other external references. The listing includes:
 
 #### Required sound files
-Any sound file names expected by the selection.
+Any sound file names expected by the output.
 
 #### Required sprite files
-Any sprite file names expected by the selection, excluding the rotation. Rotation is omitted because not all sprites need files for all rotations. For more information on this, see [Sprites](https://wiki.srb2.org/wiki/Sprite).
+Any sprite file names expected, excluding the rotation. Rotation is omitted because not all sprites need files for all rotations. For more information on this, see [Sprites](https://wiki.srb2.org/wiki/Sprite).
 
 #### Linedef executors
-The IDs of any Linedef executors called to by the selection.
+The IDs of any Linedef executors called.
 
 #### External <entity> references
-Any references to entities not declared in the current selection. This includes hard-coded slot IDs (unless they have been overridden within the selection).
+Any references to entities not declared in the output. This includes hard-coded slot IDs (unless they have been overridden within the selection).
 
 ## Arguments
 This section describes the available command-line arguments. They're separated into two categories below only to help you find what you need.
