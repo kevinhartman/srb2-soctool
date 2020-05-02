@@ -18,6 +18,8 @@ import scala.util.{Success, Try}
 //  - Add external sound dependencies to listing.
 //  - Print dependencies for SOC format.
 //  - Add option to suppress entry info comments.
+//  - Add flag to avoid upgrading referenced sprites.
+//  - Add option to force upgrade sounds even if they don't have a local definition.
 
 object SocTool extends App {
 
