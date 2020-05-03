@@ -127,6 +127,7 @@ object SocScript {
       case ThingBlock(thing) => nextBlock.withThing(thing.id, entry(thing))
       case StateBlock(state) => nextBlock.withState(state.id, entry(state))
       case SoundBlock(sound) => nextBlock.withSound(sound.id, entry(sound))
+      case Seq("Freeslot", freeslots @ _*) => nextBlock.copy(freeSlots = nextBlock.freeSlots ++ freeslots)
       case emptyBlock if emptyBlock.isEmpty =>
         if (indexedLines.nonEmpty)
           /* skip blank line */
