@@ -6,7 +6,7 @@ import org.scalatest.FlatSpec
 
 class StateBlockSpec extends FlatSpec {
   it should "parse header line" in {
-    val expectedId = 123
+    val expectedId = "123"
     val line = s"State $expectedId"
 
     line match {
@@ -26,7 +26,7 @@ class StateBlockSpec extends FlatSpec {
   }
 
   it should "parse a NEXT line" in {
-    val expectedId = 123
+    val expectedId = "123"
     val line = s"NEXT = $expectedId"
 
     line match {

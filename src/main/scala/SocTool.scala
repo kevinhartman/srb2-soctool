@@ -59,30 +59,28 @@ object SocTool extends App {
   val noInlineComments = argFlag(Set("--no-inline-comments", "-I"))
   val noAttribution = argFlag(Set("--no-attribution", "-A"))
 
-  def loadFile(): Option[Source] = {
-    val file = socFile.map(fileName => Source.fromFile(fileName))
-    file
+  val source = socFile match {
+    case Some(path) => Source.fromFile(path)
+    case None => Source.fromInputStream(System.in)
   }
 
-  val extracted = loadFile() match {
-    case Some(file) =>
-      val lines = file.getLines()
-      var script = SocScript(lines.toSeq)
+  def loadSoc(): SocScript = {
+    val lines = source.getLines()
+    var script = SocScript(lines)
 
-      if (fromOld) script = Upgrade(script)
+    if (fromOld) script = Upgrade(script)
 
-      if (Seq(things, states, sounds, levels).forall(_.isEmpty))
-        // Return all if no filters.
-        script
+    if (Seq(things, states, sounds, levels).forall(_.isEmpty))
+    // Return all if no filters.
+    script
       else {
-        val withThings = things.foldLeft(SocScript())((soc, id) => script.extractThing(id, soc))
-        val withStates = states.foldLeft(withThings)((soc, id) => script.extractState(id, soc))
-        val withSounds = sounds.foldLeft(withStates)((soc, id) => script.extractSound(id, soc))
-        val withLevels = levels.foldLeft(withSounds)((soc, id) => script.extractLevel(id, soc))
+      val withThings = things.foldLeft(SocScript())((soc, id) => script.extractThing(id, soc))
+      val withStates = states.foldLeft(withThings)((soc, id) => script.extractState(id, soc))
+      val withSounds = sounds.foldLeft(withStates)((soc, id) => script.extractSound(id, soc))
+      val withLevels = levels.foldLeft(withSounds)((soc, id) => script.extractLevel(id, soc))
 
-        withLevels
-      }
-    case None => error("SOC file not found")
+      withLevels
+    }
   }
 
   def adjustHardcodedSlot(adjustment: Int => String)(id: String): Option[String] = {
@@ -106,6 +104,7 @@ object SocTool extends App {
     (prefix + pad + radixEncodedId).toUpperCase
   }
 
+  val extracted = loadSoc();
   val ported = if (portable) MakePortable(
     SlotRenameRules(
       thingId = id => adjustHardcodedSlot(s => s"MT_${generateSlotName(s, 20)}")(id),

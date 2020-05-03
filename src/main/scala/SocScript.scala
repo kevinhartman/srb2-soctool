@@ -108,30 +108,55 @@ case class SocScript(
 }
 
 object SocScript {
-  def readScript(indexedLines: Seq[(String, Int)]): SocScript = {
+  def readScript(indexedLines: BufferedIterator[(String, Int)]): SocScript = {
     def isComment(line: String) = line.startsWith(Block.CommentSignifier)
     def isBlank(line: String) = line.trim.isEmpty
 
-    val lines = indexedLines.map(_._1)
-    val block = lines.takeWhile(!isBlank(_))
+    def readBlock(itr: Iterator[(String, Int)]): (Seq[String], BufferedIterator[(String, Int)]) = {
+      // we need to dup the iterator since we want to read/manipulate block vs rest
+      // differently.
+      val (blockItr, restItr) = itr.duplicate
 
-    val unread = indexedLines.drop(block.length)
-    def nextBlock = readScript(unread)
+      val block = blockItr.map(_._1).takeWhile(!isBlank(_)).toSeq
+      val unread = restItr.drop(block.length)
 
+      (block, unread.buffered)
+    }
+
+    def readLine(itr: Iterator[(String, Int)]): (Option[String], BufferedIterator[(String, Int)]) = {
+      val bufferedItr = itr.buffered
+      val line = bufferedItr.headOption.map(_._1)
+
+      (line, bufferedItr.drop(1).buffered)
+    }
+
+    // save the current offset before reading (it's safe to call headOption
+    // and then continue to use indexedLines)
     val offset = indexedLines.headOption.map(_._2)
+
+    val (_tempItr1, _tempItr2) = indexedLines.duplicate
+    val (line, afterLineItr) = readLine(_tempItr1)
+    val (block, afterBlockItr) = readBlock(_tempItr2)
+
     def entry[T](entity: T) = Entry(offset.get, block.length, List(), entity)
 
     block match {
-      case Seq(comment, _*) if isComment(comment) => readScript(indexedLines.drop(1)) /* skip comment */
-      case LevelBlock(level) => nextBlock.withLevel(level.id, entry(level))
-      case ThingBlock(thing) => nextBlock.withThing(thing.id, entry(thing))
-      case StateBlock(state) => nextBlock.withState(state.id, entry(state))
-      case SoundBlock(sound) => nextBlock.withSound(sound.id, entry(sound))
-      case Seq("Freeslot", freeslots @ _*) => nextBlock.copy(freeSlots = nextBlock.freeSlots ++ freeslots)
+      case Seq(comment, _*) if isComment(comment) => {
+        readScript(afterLineItr) /* skip comment */
+      }
+      case LevelBlock(level) => readScript(afterBlockItr).withLevel(level.id, entry(level))
+      case ThingBlock(thing) => readScript(afterBlockItr).withThing(thing.id, entry(thing))
+      case StateBlock(state) => readScript(afterBlockItr).withState(state.id, entry(state))
+      case SoundBlock(sound) => readScript(afterBlockItr).withSound(sound.id, entry(sound))
+      case Seq("Freeslot", freeslots @ _*) => {
+        val next = readScript(afterBlockItr)
+        next.copy(freeSlots = next.freeSlots ++ freeslots)
+      }
       case emptyBlock if emptyBlock.isEmpty =>
-        if (indexedLines.nonEmpty)
+        if (line.isDefined) {
           /* skip blank line */
-          readScript(indexedLines.drop(1))
+          readScript(afterLineItr)
+        }
         else
           /* end of script: return empty script */
           SocScript()
@@ -142,5 +167,5 @@ object SocScript {
     }
   }
 
-  def apply(lines: Seq[String]): SocScript = readScript(lines.zipWithIndex)
+  def apply(lines: Iterator[String]): SocScript = readScript(lines.zipWithIndex.buffered)
 }

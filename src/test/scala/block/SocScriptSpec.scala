@@ -5,7 +5,7 @@ import org.scalatest.FlatSpec
 class SocScriptSpec extends FlatSpec {
 
   it should "handle an empty file" in {
-    val lines = List("")
+    val lines = Iterator("")
     val script = SocScript(lines)
     assert(script.levels.isEmpty)
     assert(script.things.isEmpty)
@@ -18,7 +18,7 @@ class SocScriptSpec extends FlatSpec {
     val nextId = "999"
     val actionName = "a_Test"
 
-    val lines = List(
+    val lines = Iterator(
       "",
       "",
       s"State $stateId#this is a comment",
@@ -26,7 +26,6 @@ class SocScriptSpec extends FlatSpec {
       s"NEXT = $nextId",
       s"ACTION $actionName",
       "FAKE = VALUE",
-      "NEXT = fake",
       "",
       ""
     )
@@ -42,12 +41,12 @@ class SocScriptSpec extends FlatSpec {
     ))
 
     // Check that the script entry info is correct
-    assert(stateEntry.length == 6)
+    assert(stateEntry.length == 5)
     assert(stateEntry.offset == 2)
   }
 
   it should "handle a script with a single comment" in {
-    val lines = List(
+    val lines = Iterator(
       "# comment"
     )
 
@@ -55,7 +54,7 @@ class SocScriptSpec extends FlatSpec {
   }
 
   it should "handle a script containing multiple blocks, some of the same type" in {
-    val lines = List(
+    val lines = Iterator(
       "Thing 1",
       "",
       "State 1",
