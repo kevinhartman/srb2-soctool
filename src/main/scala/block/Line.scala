@@ -43,7 +43,8 @@ object Line {
 
   trait KeyIn extends KeyFilter {
     val keys: Set[String]
-    override def keyFilter(key: String): Boolean = keys.contains(key)
+    override def keyFilter(key: String): Boolean =
+      keys.map(s => s.toUpperCase()).contains(key.toUpperCase())
   }
 
   trait LineValueParser[T] extends (String => Option[T]) { }
