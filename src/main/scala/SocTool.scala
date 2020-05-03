@@ -2,7 +2,6 @@ import scala.io.Source
 import scala.util.{Success, Try}
 
 // TODO:
-//  - Support input from STDIN.
 //  - Support latest SOC KV names in SOC input and output
 //  - Add no-recurse option
 //  - Currently, we just replace var1 and var2 value (if it's an int) with the generated name if we are
@@ -17,6 +16,7 @@ import scala.util.{Success, Try}
 //  - Support no-info.
 //  - Support no-attribution.
 //  - Implement frame ID in required sprite file list.
+//  - It'd be cleaner to return None instead of 0 if a prop has a special case null val for 0 (most props)
 //  ---
 //  Stretch
 //  - Support comments in SOC.
@@ -24,7 +24,6 @@ import scala.util.{Success, Try}
 //  - Add option to convert some fields into terms of frac units and flags.
 //  - Add flag to avoid upgrading referenced sprites.
 //  - Add option to force upgrade sounds even if they don't have a local definition.
-//  - It'd be cleaner to return None instead of 0 if a prop has a special case null val for 0 (most props)
 
 object SocTool extends App {
 
