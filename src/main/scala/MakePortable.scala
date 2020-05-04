@@ -47,8 +47,8 @@ object MakePortable {
       val obj = entry.entity
       entry.copy(entity = obj.copy(
         id = slotRenameRules.objectId(obj.id).getOrElse(obj.id),
-        sounds = obj.sounds.map(s => slotRenameRules.soundId(s).getOrElse(s)),
-        states = obj.states.map(s => slotRenameRules.stateId(s).getOrElse(s)),
+        sounds = obj.sounds.flatMap(s => patchSound(Some(s))),
+        states = obj.states.flatMap(s => patchState(Some(s))),
 
         seeSound = patchSound(obj.seeSound),
         activeSound = patchSound(obj.activeSound),
