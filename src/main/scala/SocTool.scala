@@ -9,7 +9,6 @@ import scala.util.{Success, Try}
 //    name). In port mode, when convertible to Int, we should isolate lower 16 and emit Upper16 | MT_<id>.
 //  - Support port ID patching for more action types (var1 and var2)
 //  - Add option to suppress entry info comments.
-//  - Add help text.
 //  - Add attribution comment to output.
 //  - Support no-describe.
 //  - Support no-info.
@@ -41,6 +40,7 @@ object SocTool extends App {
     arg.getOrElse("").split(',').filter(_.nonEmpty)
   }
 
+  val help = argFlag(Set("--help", "-?", "-h"))
   val noRecurse = argFlag(Set("--no-recurse", "-R"))
   val objects = toIdList(argValue(Set("--object-ids", "-o")))
   val states = toIdList(argValue(Set("--state-ids", "-s")))
@@ -57,6 +57,11 @@ object SocTool extends App {
   val noDescribe = argFlag(Set("--no-describe", "-D"))
   val noInlineComments = argFlag(Set("--no-inline-comments", "-I"))
   val noAttribution = argFlag(Set("--no-attribution", "-A"))
+
+  if (help) {
+    PrintHelp()
+    System.exit(0)
+  }
 
   val source = socFile match {
     case Some(path) => Source.fromFile(path)
