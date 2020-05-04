@@ -1,178 +1,186 @@
 package block
 
+import block.Line.{KeyIn, SpaceDelimiter, WellDefinedKey}
 import model.Thing
 
 object ThingBlock extends Block[Thing] {
   import Line.{KeyExactly, EqualsDelimiter, KeyFilter}
 
-  object HeaderLine extends Block.HeaderLine("THING")
+  object HeaderLine extends Line.Distinct[String]
+    with SpaceDelimiter
+    with KeyIn
+    with WellDefinedKey
+  {
+    override val keyName: String = "Object"
+    override val keys: Set[String] = Set("Object", "Thing")
+  }
 
   object MapThingNumLine extends Line.Distinct[String]
     with EqualsDelimiter
     with KeyExactly
   {
-    override val keyName: String = "MAPTHINGNUM"
+    override val keyName: String = "MapThingNum"
   }
 
   object SpawnStateLine extends Line.Distinct[String]
     with EqualsDelimiter
     with KeyExactly
   {
-    override val keyName: String = "SPAWNSTATE"
+    override val keyName: String = "SpawnState"
   }
 
   object SpawnHealthLine extends Line.Distinct[String]
     with EqualsDelimiter
     with KeyExactly
   {
-    override val keyName: String = "SPAWNHEALTH"
+    override val keyName: String = "SpawnHealth"
   }
 
   object SeeStateLine extends Line.Distinct[String]
     with EqualsDelimiter
     with KeyExactly
   {
-    override val keyName: String = "SEESTATE"
+    override val keyName: String = "SeeState"
   }
 
   object SeeSoundLine extends Line.Distinct[String]
     with EqualsDelimiter
     with KeyExactly
   {
-    override val keyName: String = "SEESOUND"
+    override val keyName: String = "SeeSound"
   }
 
   object ReactionTimeLine extends Line.Distinct[String]
     with EqualsDelimiter
     with KeyExactly
   {
-    override val keyName: String = "REACTIONTIME"
+    override val keyName: String = "ReactionTime"
   }
 
   object AttackSoundLine extends Line.Distinct[String]
     with EqualsDelimiter
     with KeyExactly
   {
-    override val keyName: String = "ATTACKSOUND"
+    override val keyName: String = "AttackSound"
   }
 
   object PainStateLine extends Line.Distinct[String]
     with EqualsDelimiter
     with KeyExactly
   {
-    override val keyName: String = "PAINSTATE"
+    override val keyName: String = "PainState"
   }
 
   object PainChanceLine extends Line.Distinct[String]
     with EqualsDelimiter
     with KeyExactly
   {
-    override val keyName: String = "PAINCHANCE"
+    override val keyName: String = "PainChance"
   }
 
   object PainSoundLine extends Line.Distinct[String]
     with EqualsDelimiter
     with KeyExactly
   {
-    override val keyName: String = "PAINSOUND"
+    override val keyName: String = "PainSound"
   }
 
   object MeleeStateLine extends Line.Distinct[String]
     with EqualsDelimiter
     with KeyExactly
   {
-    override val keyName: String = "MELEESTATE"
+    override val keyName: String = "MeleeState"
   }
 
   object MissileStateLine extends Line.Distinct[String]
     with EqualsDelimiter
     with KeyExactly
   {
-    override val keyName: String = "MISSILESTATE"
+    override val keyName: String = "MissileState"
   }
 
   object DeathStateLine extends Line.Distinct[String]
     with EqualsDelimiter
     with KeyExactly
   {
-    override val keyName: String = "DEATHSTATE"
+    override val keyName: String = "DeathState"
   }
 
   object DeathSoundLine extends Line.Distinct[String]
     with EqualsDelimiter
     with KeyExactly
   {
-    override val keyName: String = "DEATHSOUND"
+    override val keyName: String = "DeathSound"
   }
 
   object XDeathStateLine extends Line.Distinct[String]
     with EqualsDelimiter
     with KeyExactly
   {
-    override val keyName: String = "XDEATHSTATE"
+    override val keyName: String = "XDeathState"
   }
 
   object SpeedLine extends Line.Distinct[String]
     with EqualsDelimiter
     with KeyExactly
   {
-    override val keyName: String = "SPEED"
+    override val keyName: String = "Speed"
   }
 
   object RadiusLine extends Line.Distinct[String]
     with EqualsDelimiter
     with KeyExactly
   {
-    override val keyName: String = "RADIUS"
+    override val keyName: String = "Radius"
   }
 
   object HeightLine extends Line.Distinct[String]
     with EqualsDelimiter
     with KeyExactly
   {
-    override val keyName: String = "HEIGHT"
+    override val keyName: String = "Height"
   }
 
   object DispOffsetLine extends Line.Distinct[String]
     with EqualsDelimiter
     with KeyExactly
   {
-    override val keyName: String = "DISPOFFSET"
+    override val keyName: String = "DispOffset"
   }
 
   object MassLine extends Line.Distinct[String]
     with EqualsDelimiter
     with KeyExactly
   {
-    override val keyName: String = "MASS"
+    override val keyName: String = "Mass"
   }
 
   object DamageLine extends Line.Distinct[String]
     with EqualsDelimiter
     with KeyExactly
   {
-    override val keyName: String = "DAMAGE"
+    override val keyName: String = "Damage"
   }
 
   object ActiveSoundLine extends Line.Distinct[String]
     with EqualsDelimiter
     with KeyExactly
   {
-    override val keyName: String = "ACTIVESOUND"
+    override val keyName: String = "ActiveSound"
   }
 
   object RaiseStateLine extends Line.Distinct[String]
     with EqualsDelimiter
     with KeyExactly
   {
-    override val keyName: String = "RAISESTATE"
+    override val keyName: String = "RaiseState"
   }
 
   object FlagsLine extends Line.Distinct[String]
     with EqualsDelimiter
     with KeyExactly
   {
-    override val keyName: String = "FLAGS"
+    override val keyName: String = "Flags"
   }
 
   object StateDependencyLine extends Line.Like[String]
