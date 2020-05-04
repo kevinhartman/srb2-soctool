@@ -3,10 +3,17 @@ import block._
 
 object PrintAsSoc {
   def apply(config: PrinterConfig)(socScript: SocScript): Unit = {
+    def printAttribution(): Unit = {
+      if (!config.printAttribution) return
+      SocTool.attribution.foreach(s => println(s"# $s"))
+    }
+
     def printComment(msg: String = "") = println(s"# $msg")
     def printDependency(dep: String) = println(s"# - $dep")
 
-    def printDependencies() = {
+    def printDependencies(): Unit = {
+      if (!config.printDependencies) return
+
       printComment("Dependencies")
       printComment()
       printComment("Required sound files:")
@@ -30,10 +37,12 @@ object PrintAsSoc {
       printComment("External sound references:")
       socScript.dependencies.externSounds.foreach(printDependency)
       printComment()
+      printAttribution()
       println()
     }
 
-    def printWarnings[T](entry: Entry[T]) = {
+    def printWarnings[T](entry: Entry[T]): Unit = {
+      if (!config.printInfoMessages) return
       entry.warnings.foreach(w => println(s"# info: $w"))
     }
 

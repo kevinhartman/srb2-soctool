@@ -129,4 +129,29 @@ object PrintHelp {
         |""".stripMargin
     )
   }
+
+  def apply(suffer: Boolean): Boolean = {
+    if (suffer) {
+      val pauseMillis = 1000 * 1
+      val typeMillis = 50
+
+      System.err.print("--no-attribution")
+      Thread.sleep(pauseMillis)
+      (1 to 20).foreach(_ => {
+        System.err.print(".")
+        Thread.sleep(typeMillis)
+      })
+      System.err.println("really?")
+      Thread.sleep(pauseMillis)
+      System.err.println()
+      "...can you at least follow me on Twitter?".foreach(c => {
+        System.err.print(c)
+        Thread.sleep(typeMillis)
+      })
+      System.err.println()
+      System.err.println()
+      Thread.sleep(pauseMillis)
+    }
+    suffer
+  }
 }

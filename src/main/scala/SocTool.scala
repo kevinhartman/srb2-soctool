@@ -25,6 +25,11 @@ import scala.util.{Success, Try}
 //  - Add option to force upgrade sounds even if they don't have a local definition.
 
 object SocTool extends App {
+  val attribution = Seq(
+    "",
+    "Generated with <3 by @ctr_peach",
+    "https://github.com/kevinhartman/srb2-soctool"
+  )
 
   def error(message: String) = {
     throw new Exception(s"** Error: $message")
@@ -56,7 +61,7 @@ object SocTool extends App {
 
   val noDescribe = argFlag(Set("--no-describe", "-D"))
   val noInlineComments = argFlag(Set("--no-inline-comments", "-I"))
-  val noAttribution = argFlag(Set("--no-attribution", "-A"))
+  val noAttribution = PrintHelp(argFlag(Set("--no-attribution", "-A")))
 
   if (help) {
     PrintHelp()
@@ -122,10 +127,16 @@ object SocTool extends App {
 
   val withDependencyInfo = BuildDependencyInfo(ported)
 
+  val printerConfig = PrinterConfig(
+    printDependencies = !noDescribe,
+    printInfoMessages = !noInlineComments,
+    printAttribution = !noAttribution
+  )
+
   val print: SocScript => Unit = if (toLua)
-    PrintAsLua(PrinterConfig())
+    PrintAsLua(printerConfig)
   else
-    PrintAsSoc(PrinterConfig())
+    PrintAsSoc(printerConfig)
 
   /* print extracted blocks to stdout */
   print(withDependencyInfo)

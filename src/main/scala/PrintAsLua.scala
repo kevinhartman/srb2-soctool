@@ -1,8 +1,15 @@
 object PrintAsLua {
   def apply(config: PrinterConfig)(socScript: SocScript): Unit = {
+    def printAttribution(): Unit = {
+      if (!config.printAttribution) return
+      SocTool.attribution.foreach(println)
+    }
+
     def printDependency(dep: String) = println(s"- $dep")
 
-    def printDependencies() = {
+    def printDependencies(): Unit = {
+      if (!config.printDependencies) return
+
       println("/*")
       println("Dependencies")
       println()
@@ -27,11 +34,13 @@ object PrintAsLua {
       println("External sound references:")
       socScript.dependencies.externSounds.foreach(printDependency)
       println()
+      printAttribution()
       println("*/")
       println()
     }
 
-    def printWarnings[T](entry: Entry[T]) = {
+    def printWarnings[T](entry: Entry[T]): Unit = {
+      if (!config.printInfoMessages) return
       entry.warnings.foreach(w => println(s"-- info: $w"))
     }
 
