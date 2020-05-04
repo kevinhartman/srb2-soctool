@@ -41,7 +41,7 @@ object LevelBlock extends Block[Level] {
     with EqualsDelimiter
     with KeyExactly
   {
-    override val keyName: String = "WEATHER"
+    override val keyName: String = "Weather"
   }
 
   object SkyNumLine extends Line.Distinct[String]
@@ -69,14 +69,14 @@ object LevelBlock extends Block[Level] {
     with EqualsDelimiter
     with KeyExactly
   {
-    override val keyName: String = "NOZONE"
+    override val keyName: String = "NoZone"
   }
 
   object NoSSMusicLine extends Line.Distinct[String]
     with EqualsDelimiter
     with KeyExactly
   {
-    override val keyName: String = "NOSSMUSIC"
+    override val keyName: String = "NoSSMusic"
   }
 
   object LevelSelectLine extends Line.Distinct[String]
