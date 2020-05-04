@@ -2,8 +2,6 @@ import scala.io.Source
 import scala.util.{Success, Try}
 
 // TODO:
-//  - Support latest SOC KV names in SOC input and output
-//  - Rename "thing" to "object" pretty much everywhere.
 //  - Add no-recurse option
 //  - Currently, we just replace var1 and var2 value (if it's an int) with the generated name if we are
 //    in port mode. This isn't correct in cases where a variable has upper bits used
