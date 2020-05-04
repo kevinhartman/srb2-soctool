@@ -10,57 +10,61 @@ object StateBlock extends Block[State] {
     with KeyIn
     with WellDefinedKey
   {
-    override val keyName: String = "FRAME"
-    override val keys: Set[String] = Set("Frame", "FRAME", "State", "STATE")
+    override val keyName: String = "State"
+    override val keys: Set[String] = Set("Frame", "State")
   }
 
   object NextLine extends Line.Distinct[String]
     with EqualsDelimiter
     with KeyExactly
   {
-    override val keyName: String = "NEXT"
+    override val keyName: String = "Next"
   }
 
   object ActionLine extends Line.Distinct[String]
     with SpaceDelimiter
     with KeyExactly
   {
-    override val keyName: String = "ACTION"
+    override val keyName: String = "Action"
   }
 
   object SpriteNumberLine extends Line.Distinct[String]
     with EqualsDelimiter
-    with KeyExactly
+    with KeyIn
+    with WellDefinedKey
   {
-    override val keyName: String = "SPRITENUMBER"
+    override val keyName: String = "SpriteName"
+    override val keys: Set[String] = Set("SpriteName", "SpriteNumber")
   }
 
   object SpriteSubNumberLine extends Line.Distinct[String]
     with EqualsDelimiter
-    with KeyExactly
+    with KeyIn
+    with WellDefinedKey
   {
-    override val keyName: String = "SPRITESUBNUMBER"
+    override val keyName: String = "SpriteFrame"
+    override val keys: Set[String] = Set("SpriteFrame", "SpriteSubNumber")
   }
 
   object DurationLine extends Line.Distinct[String]
     with EqualsDelimiter
     with KeyExactly
   {
-    override val keyName: String = "DURATION"
+    override val keyName: String = "Duration"
   }
 
   object Var1Line extends Line.Distinct[String]
     with EqualsDelimiter
     with KeyExactly
   {
-    override val keyName: String = "VAR1"
+    override val keyName: String = "Var1"
   }
 
   object Var2Line extends Line.Distinct[String]
     with EqualsDelimiter
     with KeyExactly
   {
-    override val keyName: String = "VAR2"
+    override val keyName: String = "Var2"
   }
 
   override def parseHeader: PartialFunction[String, State] = {
