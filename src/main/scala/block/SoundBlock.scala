@@ -4,27 +4,27 @@ import model.Sound
 
 object SoundBlock extends Block[Sound] {
   import Line.{KeyExactly, EqualsDelimiter}
-  object HeaderLine extends Block.HeaderLine("SOUND")
+  object HeaderLine extends Block.HeaderLine("Sound")
 
   object SingularLine extends Line.Distinct[String]
     with EqualsDelimiter
     with KeyExactly
   {
-    override val keyName: String = "SINGULAR"
+    override val keyName: String = "Singular"
   }
 
   object PriorityLine extends Line.Distinct[String]
     with EqualsDelimiter
     with KeyExactly
   {
-    override val keyName: String = "PRIORITY"
+    override val keyName: String = "Priority"
   }
 
   object FlagsLine extends Line.Distinct[String]
     with EqualsDelimiter
     with KeyExactly
   {
-    override val keyName: String = "FLAGS"
+    override val keyName: String = "Flags"
   }
 
   override def parseHeader: PartialFunction[String, Sound] = {
