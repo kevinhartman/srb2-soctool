@@ -8,11 +8,6 @@ import scala.util.{Success, Try}
 //    for something else (e.g. A_SpawnObjectRelative's var2 has lower 16 bits for object
 //    name). In port mode, when convertible to Int, we should isolate lower 16 and emit Upper16 | MT_<id>.
 //  - Support port ID patching for more action types (var1 and var2)
-//  - Add option to suppress entry info comments.
-//  - Add attribution comment to output.
-//  - Support no-describe.
-//  - Support no-info.
-//  - Support no-attribution.
 //  - Implement frame ID in required sprite file list.
 //  - It'd be cleaner to return None instead of 0 if a prop has a special case null val for 0 (most props)
 //  - Lots of missing properties on Level.
