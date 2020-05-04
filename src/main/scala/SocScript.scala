@@ -144,7 +144,12 @@ object SocScript {
       case Seq(comment, _*) if isComment(comment) => {
         readScript(afterLineItr) /* skip comment */
       }
-      case LevelBlock(level) => readScript(afterBlockItr).withLevel(level.id, entry(level))
+      case LevelBlock(level) => {
+        System.err.println(
+          """* Warning: not all level properties are currently supported.
+            |           Some may be missing from the output.""".stripMargin)
+        readScript(afterBlockItr).withLevel(level.id, entry(level))
+      }
       case ObjectBlock(obj) => readScript(afterBlockItr).withObject(obj.id, entry(obj))
       case StateBlock(state) => readScript(afterBlockItr).withState(state.id, entry(state))
       case SoundBlock(sound) => readScript(afterBlockItr).withSound(sound.id, entry(sound))
