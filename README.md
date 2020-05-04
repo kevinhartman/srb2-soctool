@@ -70,13 +70,13 @@ These arguments filter the input SOC to only the listed entities (and by default
 
 They are **additive** filters: the more IDs you specify, the more you will select.
 
-| arg                          | short | type   | description                                                                                                                                                   |
-|------------------------------|-------|--------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `--no-recurse`               | -R    | flag   | Select only the entities identified, without recursively selecting their dependencies. Only applicable if at least one entity selector argument is specified. |
-| `--thing-ids <id>[,<id>]...` | -o    | csv    | Select these things.                                                                                                                                          |
-| `--state-ids <id>[,<id>]...` | -s    | csv    | Select these states.                                                                                                                                          |
-| `--sound-ids <id>[,<id>]...` | -d    | csv    | Select these sounds.                                                                                                                                          |
-| `--level-ids <id>[,<id>]...` | -l    | csv    | Select these levels.                                                                                                                                          |
+| arg                           | short | type   | description                                                                                                                                                   |
+|-------------------------------|-------|--------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `--no-recurse`                | -R    | flag   | Select only the entities identified, without recursively selecting their dependencies. Only applicable if at least one entity selector argument is specified. |
+| `--object-ids <id>[,<id>]...` | -o    | csv    | Select these objects.                                                                                                                                         |
+| `--state-ids <id>[,<id>]...`  | -s    | csv    | Select these states.                                                                                                                                          |
+| `--sound-ids <id>[,<id>]...`  | -d    | csv    | Select these sounds.                                                                                                                                          |
+| `--level-ids <id>[,<id>]...`  | -l    | csv    | Select these levels.                                                                                                                                          |
 
 ### Action arguments
 These arguments specify the processing behavior to apply to the selection.

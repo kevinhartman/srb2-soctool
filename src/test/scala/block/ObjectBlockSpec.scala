@@ -2,9 +2,9 @@ package block
 
 import org.scalatest.FlatSpec
 
-class ThingBlockSpec extends FlatSpec {
+class ObjectBlockSpec extends FlatSpec {
   it should "parse states with filter property" in {
-    val thingId = "123"
+    val objectId = "123"
 
     val meleeStateKey = "MELEESTATE"
     val meleeStateId = "111"
@@ -13,21 +13,21 @@ class ThingBlockSpec extends FlatSpec {
     val seeStateId = "222"
 
     val lines = List(
-      s"Thing $thingId",
+      s"Object $objectId",
       s"$meleeStateKey = $meleeStateId",
       s"$seeStateKey = $seeStateId"
     )
 
-    val thingOpt = ThingBlock.unapply(lines)
-    assert(thingOpt.isDefined)
+    val objectOpt = ObjectBlock.unapply(lines)
+    assert(objectOpt.isDefined)
 
-    val thing = thingOpt.get
-    assert(thing.states.contains(meleeStateId))
-    assert(thing.states.contains(seeStateId))
+    val obj = objectOpt.get
+    assert(obj.states.contains(meleeStateId))
+    assert(obj.states.contains(seeStateId))
   }
 
   it should "parse sounds with filter property" in {
-    val thingId = "123"
+    val objectId = "123"
 
     val deathSoundKey = "DEATHSOUND"
     val deathSoundId = "111"
@@ -36,16 +36,16 @@ class ThingBlockSpec extends FlatSpec {
     val seeSoundId = "222"
 
     val lines = List(
-      s"Thing $thingId",
+      s"Thing $objectId",
       s"$deathSoundKey = $deathSoundId",
       s"$seeSoundKey = $seeSoundId"
     )
 
-    val thingOpt = ThingBlock.unapply(lines)
-    assert(thingOpt.isDefined)
+    val objectOpt = ObjectBlock.unapply(lines)
+    assert(objectOpt.isDefined)
 
-    val thing = thingOpt.get
-    assert(thing.sounds.contains(deathSoundId))
-    assert(thing.sounds.contains(seeSoundId))
+    val obj = objectOpt.get
+    assert(obj.sounds.contains(deathSoundId))
+    assert(obj.sounds.contains(seeSoundId))
   }
 }

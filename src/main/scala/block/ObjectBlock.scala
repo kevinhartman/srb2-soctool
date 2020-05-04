@@ -1,9 +1,9 @@
 package block
 
 import block.Line.{KeyIn, SpaceDelimiter, WellDefinedKey}
-import model.Thing
+import model.Object
 
-object ThingBlock extends Block[Thing] {
+object ObjectBlock extends Block[Object] {
   import Line.{KeyExactly, EqualsDelimiter, KeyFilter}
 
   object HeaderLine extends Line.Distinct[String]
@@ -197,8 +197,8 @@ object ThingBlock extends Block[Thing] {
     override def keyFilter(key: String): Boolean = key.toUpperCase.endsWith("SOUND")
   }
 
-  override def parseHeader: PartialFunction[String, Thing] = {
-    case HeaderLine(id) => Thing(
+  override def parseHeader: PartialFunction[String, Object] = {
+    case HeaderLine(id) => Object(
       id = id
     )
   }
@@ -207,13 +207,13 @@ object ThingBlock extends Block[Thing] {
     def unapply(arg: String): Option[(String, String)] = Some((arg, arg))
   }
 
-  def parseDependency(entry: Thing): PartialFunction[String, (String, Thing)] = {
+  def parseDependency(entry: Object): PartialFunction[String, (String, Object)] = {
     case Mux(SoundDependencyLine(id), line) => (line, entry.withSound(id))
     case Mux(StateDependencyLine(id), line) => (line, entry.withState(id))
     case Mux(_, line) => (line, entry)
   }
 
-  def parseProperty: PartialFunction[(String, Thing), Thing] = {
+  def parseProperty: PartialFunction[(String, Object), Object] = {
     case (MapThingNumLine(num),      thing) => thing.copy(mapThingNum = Some(num))
     case (SpawnStateLine(stateId),   thing) => thing.copy(spawnState = Some(stateId))
     case (SpawnHealthLine(health),   thing) => thing.copy(spawnHealth = Some(health))
@@ -240,12 +240,12 @@ object ThingBlock extends Block[Thing] {
     case (FlagsLine(flags),          thing) => thing.copy(flags = Some(flags))
   }
 
-  override def parseProperty(thing: Thing): PartialFunction[String, Thing] =
+  override def parseProperty(thing: Object): PartialFunction[String, Object] =
     parseDependency(thing).andThen(parseProperty)
 
-  override def writeHeader(thing: Thing): String = HeaderLine(thing.id)
+  override def writeHeader(thing: Object): String = HeaderLine(thing.id)
 
-  override def writeProperties(thing: Thing): Seq[String] = {
+  override def writeProperties(thing: Object): Seq[String] = {
     Seq(
       thing.mapThingNum  .map(MapThingNumLine(_)),
       thing.spawnState   .map(SpawnStateLine(_)),

@@ -1,6 +1,6 @@
 package model
 
-case class Thing(
+case class Object(
   id: String,
   mapThingNum: Option[String] = None,
   spawnState: Option[String] = None,
@@ -31,9 +31,9 @@ case class Thing(
   sounds: Set[String] = Set()
 )
 {
-  def withState(stateId: String): Thing =
+  def withState(stateId: String): Object =
     this.copy(states = this.states + stateId)
 
-  def withSound(soundId: String): Thing =
+  def withSound(soundId: String): Object =
     this.copy(sounds = this.sounds + soundId)
 }

@@ -8,7 +8,7 @@ class SocScriptSpec extends FlatSpec {
     val lines = Iterator("")
     val script = SocScript(lines)
     assert(script.levels.isEmpty)
-    assert(script.things.isEmpty)
+    assert(script.objects.isEmpty)
     assert(script.states.isEmpty)
     assert(script.sounds.isEmpty)
   }
@@ -55,7 +55,7 @@ class SocScriptSpec extends FlatSpec {
 
   it should "handle a script containing multiple blocks, some of the same type" in {
     val lines = Iterator(
-      "Thing 1",
+      "Object 1",
       "",
       "State 1",
       "",
@@ -70,7 +70,7 @@ class SocScriptSpec extends FlatSpec {
 
     val script = SocScript(lines)
 
-    assert(script.things.size == 2)
+    assert(script.objects.size == 2)
     assert(script.states.size == 2)
     assert(script.sounds.size == 1)
     assert(script.levels.size == 1)

@@ -10,7 +10,7 @@ case class State(
   var1: Option[String] = None,
   var2: Option[String] = None,
 ) {
-  def Var1AsThing(): Option[String] = {
+  def Var1AsObject(): Option[String] = {
     if (var1.contains("0")) return None
 
     val actions = Seq(
@@ -37,7 +37,7 @@ case class State(
     }
   }
 
-  def Var2AsThing(): Option[String] = {
+  def Var2AsObject(): Option[String] = {
     if (var2.contains("0")) return None
 
     val actions = Seq(

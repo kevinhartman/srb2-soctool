@@ -44,7 +44,7 @@ object SocTool extends App {
   }
 
   val noRecurse = argFlag(Set("--no-recurse", "-R"))
-  val things = toIdList(argValue(Set("--thing-ids", "-o")))
+  val objects = toIdList(argValue(Set("--object-ids", "-o")))
   val states = toIdList(argValue(Set("--state-ids", "-s")))
   val sounds = toIdList(argValue(Set("--sound-ids", "-d")))
   val levels = toIdList(argValue(Set("--level-ids", "-l")))
@@ -71,12 +71,12 @@ object SocTool extends App {
 
     if (fromOld) script = Upgrade(script)
 
-    if (Seq(things, states, sounds, levels).forall(_.isEmpty)) {
+    if (Seq(objects, states, sounds, levels).forall(_.isEmpty)) {
      // Return all if no filters.
      script
     } else {
-      val withThings = things.foldLeft(SocScript())((soc, id) => script.extractThing(id, soc))
-      val withStates = states.foldLeft(withThings)((soc, id) => script.extractState(id, soc))
+      val withObjects = objects.foldLeft(SocScript())((soc, id) => script.extractObject(id, soc))
+      val withStates = states.foldLeft(withObjects)((soc, id) => script.extractState(id, soc))
       val withSounds = sounds.foldLeft(withStates)((soc, id) => script.extractSound(id, soc))
       val withLevels = levels.foldLeft(withSounds)((soc, id) => script.extractLevel(id, soc))
 
@@ -108,7 +108,7 @@ object SocTool extends App {
   val extracted = loadSoc();
   val ported = if (portable) MakePortable(
     SlotRenameRules(
-      thingId = id => adjustHardcodedSlot(s => s"MT_${generateSlotName(s, 20)}")(id),
+      objectId = id => adjustHardcodedSlot(s => s"MT_${generateSlotName(s, 20)}")(id),
       stateId = id => adjustHardcodedSlot(s => s"S_${generateSlotName(s, 20)}")(id),
       soundId = id => adjustHardcodedSlot(s => s"sfx_${generateSlotName(s, 6).toLowerCase}")(id),
       spriteId = id =>

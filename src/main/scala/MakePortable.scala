@@ -1,7 +1,7 @@
-import model.{Sound, State, Thing}
+import model.{Sound, State, Object}
 
 case class SlotRenameRules(
-  thingId: String => Option[String] = _ => None,
+  objectId: String => Option[String] = _ => None,
   stateId: String => Option[String] = _ => None,
   soundId: String => Option[String] = _ => None,
   spriteId: String => Option[String] = _ => None
@@ -11,7 +11,7 @@ object MakePortable {
   def apply(slotRenameRules: SlotRenameRules)(socScript: SocScript): SocScript = {
     import scala.collection.breakOut
 
-    val things = socScript.things.values.map(_.entity)
+    val objects = socScript.objects.values.map(_.entity)
     val sounds = socScript.sounds.values.map(_.entity)
     val states = socScript.states.values.map(_.entity)
 
@@ -20,13 +20,13 @@ object MakePortable {
     // name identifies one of these freeslots.
     //
     // The logic is:
-    //   - for things, states, and sounds, generate a freeslot if the original
+    //   - for objects, states, and sounds, generate a freeslot if the original
     //     slot ID is a hard-coded number.
     //   - for sprites, generate a freeslot only if:
     //       a) the sprite ID is hard-coded AND
     //       b) at least one state using it was also declared with a hard-coded ID.
     val freeslots: Set[String] =
-      things.flatMap(thing => slotRenameRules.thingId(thing.id)).toSet ++
+      objects.flatMap(obj => slotRenameRules.objectId(obj.id)).toSet ++
       sounds.flatMap(sound => slotRenameRules.soundId(sound.id)) ++
       states.flatMap(state => slotRenameRules.stateId(state.id)) ++
       states.filter(state => slotRenameRules.stateId(state.id).isDefined)
@@ -38,32 +38,32 @@ object MakePortable {
       // TODO: log if skipped
     }
 
-    def patchThing(prop: Option[String]) = patchProp(prop, slotRenameRules.thingId)
+    def patchObject(prop: Option[String]) = patchProp(prop, slotRenameRules.objectId)
     def patchSound(prop: Option[String]) = patchProp(prop, slotRenameRules.soundId)
     def patchState(prop: Option[String]) = patchProp(prop, slotRenameRules.stateId)
     def patchSprite(prop: Option[String]) = patchProp(prop, slotRenameRules.spriteId)
 
-    val patchThings: Map[String, Entry[Thing]] = socScript.things.values.map(entry => {
-      val thing = entry.entity
-      entry.copy(entity = thing.copy(
-        id = slotRenameRules.thingId(thing.id).getOrElse(thing.id),
-        sounds = thing.sounds.map(s => slotRenameRules.soundId(s).getOrElse(s)),
-        states = thing.states.map(s => slotRenameRules.stateId(s).getOrElse(s)),
+    val patchObjects: Map[String, Entry[Object]] = socScript.objects.values.map(entry => {
+      val obj = entry.entity
+      entry.copy(entity = obj.copy(
+        id = slotRenameRules.objectId(obj.id).getOrElse(obj.id),
+        sounds = obj.sounds.map(s => slotRenameRules.soundId(s).getOrElse(s)),
+        states = obj.states.map(s => slotRenameRules.stateId(s).getOrElse(s)),
 
-        seeSound = patchSound(thing.seeSound),
-        activeSound = patchSound(thing.activeSound),
-        deathSound = patchSound(thing.deathSound),
-        painSound = patchSound(thing.painSound),
-        attackSound = patchSound(thing.attackSound),
+        seeSound = patchSound(obj.seeSound),
+        activeSound = patchSound(obj.activeSound),
+        deathSound = patchSound(obj.deathSound),
+        painSound = patchSound(obj.painSound),
+        attackSound = patchSound(obj.attackSound),
 
-        deathState = patchState(thing.deathState),
-        meleeState = patchState(thing.meleeState),
-        missilesState = patchState(thing.missilesState),
-        painState = patchState(thing.painState),
-        raiseState = patchState(thing.raiseState),
-        seeState = patchState(thing.seeState),
-        spawnState = patchState(thing.spawnState),
-        xDeathState = patchState(thing.xDeathState)
+        deathState = patchState(obj.deathState),
+        meleeState = patchState(obj.meleeState),
+        missilesState = patchState(obj.missilesState),
+        painState = patchState(obj.painState),
+        raiseState = patchState(obj.raiseState),
+        seeState = patchState(obj.seeState),
+        spawnState = patchState(obj.spawnState),
+        xDeathState = patchState(obj.xDeathState)
       ))}
     ).map(entry => (entry.entity.id, entry))(breakOut)
 
@@ -90,12 +90,12 @@ object MakePortable {
           id = slotRenameRules.stateId(state.id).getOrElse(state.id),
           next = patchState(state.next),
           spriteNumber = patchedSprite,
-          var1 = patchThing(state.Var1AsThing()).orElse(state.var1),
-          var2 = patchThing(state.Var2AsThing()).orElse(state.var2)
+          var1 = patchObject(state.Var1AsObject()).orElse(state.var1),
+          var2 = patchObject(state.Var2AsObject()).orElse(state.var2)
         )
       )
     }).map(entry => (entry.entity.id, entry))(breakOut)
 
-    socScript.copy(freeSlots = freeslots, things = patchThings, states = patchStates, sounds = patchSounds)
+    socScript.copy(freeSlots = freeslots, objects = patchObjects, states = patchStates, sounds = patchSounds)
   }
 }

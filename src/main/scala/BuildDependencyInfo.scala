@@ -23,21 +23,21 @@ object BuildDependencyInfo {
       s"${id.drop(4)}$frameId<rotation>"
     }
 
-    val things = socScript.things.values.map(_.entity)
+    val objects = socScript.objects.values.map(_.entity)
     val states = socScript.states.values.map(_.entity)
     val sounds = socScript.sounds.values.map(_.entity)
 
-    val processThings = things.foldLeft(Dependencies())((deps, thing) => {
+    val processObjects = objects.foldLeft(Dependencies())((deps, obj) => {
       deps.copy(
-        externStates = deps.externStates ++ thing.states.filterNot(socScript.states.contains).filterNot(_ == "0"),
-        externSounds = deps.externSounds ++ thing.sounds.filterNot(socScript.sounds.contains).filterNot(_ == "0"),
+        externStates = deps.externStates ++ obj.states.filterNot(socScript.states.contains).filterNot(_ == "0"),
+        externSounds = deps.externSounds ++ obj.sounds.filterNot(socScript.sounds.contains).filterNot(_ == "0"),
 
         // even if the sound is not declared locally, we can know its name if not hard-coded
-        soundsFiles = deps.soundsFiles ++ thing.sounds.filterNot(isHardcoded).map(soundName)
+        soundsFiles = deps.soundsFiles ++ obj.sounds.filterNot(isHardcoded).map(soundName)
       )
     })
 
-    val processStates = states.foldLeft(processThings)((deps, state) => {
+    val processStates = states.foldLeft(processObjects)((deps, state) => {
       deps.copy(
         externStates = deps.externStates ++ state.next.filterNot(socScript.states.contains).filterNot(_ == "0"),
         externSprites = deps.externSprites ++ state.spriteNumber
@@ -46,8 +46,8 @@ object BuildDependencyInfo {
           .filterNot(isHardcoded)
           .map(spriteName(_, state.spriteSubNumber.getOrElse("0"))),
         externObjects = deps.externObjects
-          ++ state.Var1AsThing().filterNot(socScript.things.contains)
-          ++ state.Var2AsThing().filterNot(socScript.things.contains),
+          ++ state.Var1AsObject().filterNot(socScript.objects.contains)
+          ++ state.Var2AsObject().filterNot(socScript.objects.contains),
         lineDefs = deps.lineDefs ++ state.Var1AsLinedefExecutor()
       )
     })

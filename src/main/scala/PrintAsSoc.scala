@@ -51,9 +51,9 @@ object PrintAsSoc {
       println()
     })
 
-    socScript.things.values.filter(config.thingFilter).foreach(entry => {
+    socScript.objects.values.filter(config.objectFilter).foreach(entry => {
       printWarnings(entry)
-      ThingBlock(entry.entity).foreach(println)
+      ObjectBlock(entry.entity).foreach(println)
       println()
     })
 

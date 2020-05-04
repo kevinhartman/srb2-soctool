@@ -21,7 +21,7 @@ case class Dependencies(
 case class SocScript(
   freeSlots: Set[String] = Set(),
   levels: Map[String, Entry[Level]] = Map(),
-  things: Map[String, Entry[Thing]] = Map(),
+  objects: Map[String, Entry[Object]] = Map(),
   states: Map[String, Entry[State]] = Map(),
   sounds: Map[String, Entry[Sound]] = Map(),
 
@@ -34,8 +34,8 @@ case class SocScript(
   def withLevel(entityId: String, level: Entry[Level]): SocScript =
     this.copy(levels = this.levels + (entityId -> level))
 
-  def withThing(entityId: String, thing: Entry[Thing]): SocScript =
-    this.copy(things = this.things + (entityId -> thing))
+  def withObject(entityId: String, obj: Entry[Object]): SocScript =
+    this.copy(objects = this.objects + (entityId -> obj))
 
   def withState(entityId: String, state: Entry[State]): SocScript =
     this.copy(states = this.states + (entityId -> state))
@@ -57,23 +57,23 @@ case class SocScript(
     }
   }
 
-  def extractThing(id: String, result: SocScript = SocScript()): SocScript = {
-    things.get(id) match {
-      case Some(thingEntry) if !result.things.contains(id) =>
-        val withThing: SocScript = result.withThing(id, thingEntry)
+  def extractObject(id: String, result: SocScript = SocScript()): SocScript = {
+    objects.get(id) match {
+      case Some(objEntry) if !result.objects.contains(id) =>
+        val withObject: SocScript = result.withObject(id, objEntry)
 
-        val withStates = thingEntry.entity.states.foldLeft(withThing)((res, stateId) =>
+        val withStates = objEntry.entity.states.foldLeft(withObject)((res, stateId) =>
           extractState(stateId, res)
         )
 
-        val withSounds = thingEntry.entity.sounds.foldLeft(withStates)((res, soundId) =>
+        val withSounds = objEntry.entity.sounds.foldLeft(withStates)((res, soundId) =>
           extractSound(soundId, res)
         )
 
         withSounds
       case Some(_) => result // already processed
       case None =>
-        if (id != "0") System.err.println(s"* Warning: Thing $id not found in script.")
+        if (id != "0") System.err.println(s"* Warning: Object $id not found in script.")
         result
     }
   }
@@ -84,8 +84,8 @@ case class SocScript(
         val withState = result.withState(id, stateEntry)
         val withNextState = stateEntry.entity.next.map(extractState(_, withState)).getOrElse(withState)
 
-        val withVar1Obj = stateEntry.entity.Var1AsThing().map(extractThing(_, withNextState)).getOrElse(withNextState)
-        val withVar2Obj = stateEntry.entity.Var2AsThing().map(extractThing(_, withVar1Obj)).getOrElse(withVar1Obj)
+        val withVar1Obj = stateEntry.entity.Var1AsObject().map(extractObject(_, withNextState)).getOrElse(withNextState)
+        val withVar2Obj = stateEntry.entity.Var2AsObject().map(extractObject(_, withVar1Obj)).getOrElse(withVar1Obj)
 
         withVar2Obj
       case Some(_) => result // already processed
@@ -145,7 +145,7 @@ object SocScript {
         readScript(afterLineItr) /* skip comment */
       }
       case LevelBlock(level) => readScript(afterBlockItr).withLevel(level.id, entry(level))
-      case ThingBlock(thing) => readScript(afterBlockItr).withThing(thing.id, entry(thing))
+      case ObjectBlock(obj) => readScript(afterBlockItr).withObject(obj.id, entry(obj))
       case StateBlock(state) => readScript(afterBlockItr).withState(state.id, entry(state))
       case SoundBlock(sound) => readScript(afterBlockItr).withSound(sound.id, entry(sound))
       case Seq("Freeslot", freeslots @ _*) => {
