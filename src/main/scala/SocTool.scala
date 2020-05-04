@@ -3,6 +3,7 @@ import scala.util.{Success, Try}
 
 // TODO:
 //  - Support latest SOC KV names in SOC input and output
+//  - Rename "thing" to "object" pretty much everywhere.
 //  - Add no-recurse option
 //  - Currently, we just replace var1 and var2 value (if it's an int) with the generated name if we are
 //    in port mode. This isn't correct in cases where a variable has upper bits used
@@ -17,6 +18,7 @@ import scala.util.{Success, Try}
 //  - Support no-attribution.
 //  - Implement frame ID in required sprite file list.
 //  - It'd be cleaner to return None instead of 0 if a prop has a special case null val for 0 (most props)
+//  - Lots of missing properties on Level.
 //  ---
 //  Stretch
 //  - Support comments in SOC.
@@ -69,10 +71,10 @@ object SocTool extends App {
 
     if (fromOld) script = Upgrade(script)
 
-    if (Seq(things, states, sounds, levels).forall(_.isEmpty))
-    // Return all if no filters.
-    script
-      else {
+    if (Seq(things, states, sounds, levels).forall(_.isEmpty)) {
+     // Return all if no filters.
+     script
+    } else {
       val withThings = things.foldLeft(SocScript())((soc, id) => script.extractThing(id, soc))
       val withStates = states.foldLeft(withThings)((soc, id) => script.extractState(id, soc))
       val withSounds = sounds.foldLeft(withStates)((soc, id) => script.extractSound(id, soc))
