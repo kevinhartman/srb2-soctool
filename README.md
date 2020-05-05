@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://wiki.srb2.org/wiki/File:CREDIT05HQ.png">
-  <img src="https://wiki.srb2.org/w/images/1/19/CREDIT05HQ.png" alt="Official artwork from credits of tails fixing a Robot." height="250">
+  <img src="/banner.png" alt="Official artwork from credits of tails fixing a Robot." height="300">
   </a>
 </p>
 
