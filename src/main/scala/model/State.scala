@@ -186,10 +186,13 @@ case class State(
   def Var1LinedefExecutor(): Option[String] = {
     if (var1.contains("0")) return None
 
-    val actions = Set(
+    val lower = Set(
       "A_LinedefExecute"
     )
 
-    var1.filter(actions.contains)
+    action match {
+      case Some(a) if lower.contains(a) => var1
+      case _ => None
+    }
   }
 }
