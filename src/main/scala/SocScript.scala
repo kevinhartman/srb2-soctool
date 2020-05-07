@@ -84,8 +84,8 @@ case class SocScript(
         val withState = result.withState(id, stateEntry)
         val withNextState = stateEntry.entity.next.map(extractState(_, withState)).getOrElse(withState)
 
-        val withVar1Obj = stateEntry.entity.Var1AsObject().map(extractObject(_, withNextState)).getOrElse(withNextState)
-        val withVar2Obj = stateEntry.entity.Var2AsObject().map(extractObject(_, withVar1Obj)).getOrElse(withVar1Obj)
+        val withVar1Obj = stateEntry.entity.Var1Object().map(extractObject(_, withNextState)).getOrElse(withNextState)
+        val withVar2Obj = stateEntry.entity.Var2Object().map(extractObject(_, withVar1Obj)).getOrElse(withVar1Obj)
 
         withVar2Obj
       case Some(_) => result // already processed

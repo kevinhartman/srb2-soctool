@@ -39,16 +39,15 @@ object BuildDependencyInfo {
 
     val processStates = states.foldLeft(processObjects)((deps, state) => {
       deps.copy(
-        externStates = deps.externStates ++ state.next.filterNot(socScript.states.contains).filterNot(_ == "0"),
+        externStates = deps.externStates ++ state.states.filterNot(socScript.states.contains),
         externSprites = deps.externSprites ++ state.spriteNumber
           .filterNot(id => socScript.freeSlots.contains(id) || !isHardcoded(id)),
         spriteFiles = deps.spriteFiles ++ state.spriteNumber
           .filterNot(isHardcoded)
           .map(spriteName(_, state.spriteSubNumber.getOrElse("0"))),
-        externObjects = deps.externObjects
-          ++ state.Var1AsObject().filterNot(socScript.objects.contains)
-          ++ state.Var2AsObject().filterNot(socScript.objects.contains),
-        lineDefs = deps.lineDefs ++ state.Var1AsLinedefExecutor()
+        externObjects = deps.externObjects ++ state.objects.filterNot(socScript.objects.contains),
+        externSounds = deps.externSounds ++ state.sounds.filterNot(socScript.sounds.contains),
+        lineDefs = deps.lineDefs ++ state.Var1LinedefExecutor()
       )
     })
 

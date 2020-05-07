@@ -78,7 +78,7 @@ object MakePortable {
       val state = entry.entity
 
       val patchedSprite = patchSprite(state.spriteNumber)
-      val warnings = patchedSprite match {
+      var warnings = patchedSprite match {
         case Some(patchedId) if freeslots.contains(patchedId) =>
           entry.warnings :+ s"sprite freeslot '$patchedId' migrated from slot ${state.spriteNumber.get}"
         case _ => entry.warnings
@@ -90,8 +90,8 @@ object MakePortable {
           id = slotRenameRules.stateId(state.id).getOrElse(state.id),
           next = patchState(state.next),
           spriteNumber = patchedSprite,
-          var1 = patchObject(state.Var1AsObject()).orElse(state.var1),
-          var2 = patchObject(state.Var2AsObject()).orElse(state.var2)
+          var1 = patchObject(state.Var1Object()).orElse(state.var1),
+          var2 = patchObject(state.Var2Object()).orElse(state.var2)
         )
       )
     }).map(entry => (entry.entity.id, entry))(breakOut)
