@@ -32,8 +32,9 @@ object BuildDependencyInfo {
         externStates = deps.externStates ++ obj.states.filterNot(socScript.states.contains).filterNot(_ == "0"),
         externSounds = deps.externSounds ++ obj.sounds.filterNot(socScript.sounds.contains).filterNot(_ == "0"),
 
-        // even if the sound is not declared locally, we can know its name if not hard-coded
-        soundsFiles = deps.soundsFiles ++ obj.sounds.filterNot(isHardcoded).map(soundName)
+        // We mention the sound file if it has a local declaration, as long as it's not hardcoded
+        // TODO: support hard coded sound names.
+        soundsFiles = deps.soundsFiles ++ obj.sounds.filter(socScript.sounds.contains).filterNot(isHardcoded).map(soundName)
       )
     })
 
