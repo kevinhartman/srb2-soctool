@@ -60,10 +60,12 @@ Any references to entities not declared in the output. This includes hard-coded 
 Mathematical expressions used in an entity reference context will appear here as well, even if the expression would resolve to a locally declared entity. This is because `soctool` does not evaluate expressions. You can use this information to manually augment your selectors to include these references.
 
 #### Required sound files
-Any sound lump names expected by the output.
+Any sound lump names expected by locally* declared sounds.
+
+\* Currently, this does not include hard-coded slot numbers, but it should.
 
 #### Required sprite files
-Any sprite lump names expected by local sprites, excluding the rotation*.
+Any sprite lump names expected by locally declared sprites, excluding the rotation*.
 
 A sprite is considered local if the selection contains a matching freeslot declaration. For example, if a State references a sprite by a hard-coded slot number and port mode is off, this slot number is considered to be external. If the same state is processed with port mode on, the sprite would be migrated to a freeslot**, making it local.
 
