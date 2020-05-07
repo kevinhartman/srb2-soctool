@@ -14,19 +14,6 @@ case class State(
   def states: Set[String] = next.filterNot(_ == "0").toSet ++ Var1State() ++ Var2State()
   def sounds: Set[String] = Var1Sound().toSet ++ Var2Sound()
 
-  // TODO:
-  //  - Depends on object ID in RaiseState:
-  //      A_DropMine
-  //      A_ShootBullet
-  //  - A_RandomStateRange uses a state range.
-  //  - Warn user:
-  //      A_CusValAction
-  //      A_RelayCustomValue
-  //      A_SetCustomValue
-  //      A_UseCusValMemo
-
-
-
   /**
    * Note: we don't do anything special for upper v.s. lower
    * data, since we cannot resolve expressions (this would require all constants
@@ -39,8 +26,7 @@ case class State(
    * so there's relatively little risk of it patching something incorrectly, assuming the
    * var value is stored in the lower 16 bits. If the value is expected in the upper 16,
    * we DO NOT patch it, since it'd be easy to get wrong (e.g. upper 16 is actually null,
-   *
-   * but lower has an unrelated value < 2^16 which could be misinterpreted).
+   * but the lower 16 has an unrelated value < 2^16, which could be misinterpreted).
    *
    * @param includeUpper return expression even if action uses upper var1 to store object.
    *                     Used by dependency lists, but not port mode.

@@ -41,7 +41,12 @@ object PrintAsLua {
 
     def printWarnings[T](entry: Entry[T]): Unit = {
       if (!config.printInfoMessages) return
-      entry.warnings.foreach(w => println(s"-- info: $w"))
+      entry.warnings.foreach(ws => {
+        val lines = ws.split('\n')
+
+        println(s"-- info: ${ lines.head }")
+        lines.drop(1).foreach(w => println(s"--       $w")) }
+      )
     }
 
     def printProp(prop: String) = println(s"    $prop")

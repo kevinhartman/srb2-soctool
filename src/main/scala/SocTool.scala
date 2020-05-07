@@ -3,16 +3,14 @@ import scala.util.{Success, Try}
 
 // TODO:
 //  - Add no-recurse option
-//  - Currently, we just replace var1 and var2 value (if it's an int) with the generated name if we are
-//    in port mode. This isn't correct in cases where a variable has upper bits used
-//    for something else (e.g. A_SpawnObjectRelative's var2 has lower 16 bits for object
-//    name). In port mode, when convertible to Int, we should isolate lower 16 and emit Upper16 | MT_<id>.
-//  - Support port ID patching for more action types (var1 and var2)
 //  - Implement frame ID in required sprite file list.
 //  - It'd be cleaner to return None instead of 0 if a prop has a special case null val for 0 (most props)
 //  - Lots of missing properties on Level.
+//  - We should list required sound files for hard-coded number slots that have a local Sound def.
+//    Will need to look through SRB2 src to figure out how these are named.
 //  ---
 //  Stretch
+//  - Support upper 16 references when the full 32 bits of the var is an int.
 //  - Support comments in SOC.
 //  - Add option to not recursively select through var1 and var2.
 //  - Add option to convert some fields into terms of frac units and flags.
@@ -108,7 +106,7 @@ object SocTool extends App {
     (prefix + pad + radixEncodedId).toUpperCase
   }
 
-  val extracted = loadSoc();
+  val extracted = AddWarnings(loadSoc())
   val ported = if (portable) MakePortable(
     SlotRenameRules(
       objectId = id => adjustHardcodedSlot(s => s"MT_${generateSlotName(s, 20)}")(id),
