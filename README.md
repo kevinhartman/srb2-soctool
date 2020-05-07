@@ -48,16 +48,28 @@ Note that for spites, the slot number is base-36 encoded, due its 4 character li
 After porting SOC entities, be sure to examine the dependency listing to determine which asset files are expected by the ported code.
 
 ## Dependency listing
-By default, the generated output (SOC or Lua code) includes a listing of all external references and required assets. If your output is missing dependencies from the original input SOC file, they will be listed as external references here, along with any other external references. The listing includes:
+By default, the generated output (SOC or Lua code) includes a listing of all external references** and required assets. If your output is missing dependencies from the original input SOC file, they will be listed as external references here, along with any other external references.
+
+** There are some limitations to `soctool`'s dependency analysis that prevent certain dependencies from being recognized. See the Limitations section below for details.
+
+The listing includes:
 
 #### External <entity> references
 Any references to entities not declared in the output. This includes hard-coded slot IDs (unless they have been overridden within the selection).
 
+Mathematical expressions used in an entity reference context will appear here as well, even if the expression would resolve to a locally declared entity. This is because `soctool` does not evaluate expressions. You can use this information to manually augment your selectors to include these references.
+
 #### Required sound files
-Any sound file names expected by the output.
+Any sound lump names expected by the output.
 
 #### Required sprite files
-Any sprite file names expected, excluding the rotation. Rotation is omitted because not all sprites need files for all rotations. For more information on this, see [Sprites](https://wiki.srb2.org/wiki/Sprite).
+Any sprite lump names expected by local sprites, excluding the rotation*.
+
+A sprite is considered local if the selection contains a matching freeslot declaration. For example, if a State references a sprite by a hard-coded slot number and port mode is off, this slot number is considered to be external. If the same state is processed with port mode on, the sprite would be migrated to a freeslot**, making it local.
+
+\* Rotation is omitted because not all sprites need files for all rotations. For more information on this, see [Sprites](https://wiki.srb2.org/wiki/Sprite).
+
+\** Sprites are only migrated to freeslots if at least one corresponding state in the same selection is also migrated.
 
 #### Linedef executors
 The IDs of any Linedef executors called.
@@ -93,5 +105,32 @@ These arguments specify the processing behavior to apply to the selection.
 | `--no-attribution`     | -A    | flag   | Suppress the generation of the attribution message.                                                                                                                                                                                                                                                                                                   |
 | `--help`               | -?    | flag   | Print the help text.                                                                                                                                                                                                                                                                                                                                  |
 
+## Limitations
+### Port mode
+Slot number references cannot be ported unless they are numeric constants. This means that `soctool` won't port slot numbers that are involved in mathematical expressions.
+
+This is because `soctool` does not evaluate expressions. To do this, it would need to know all constants defined in SRB2 (some of which may only be known at runtime). This just isn't worth doing, since old SOC code that hard-codes slot numbers is unlikely to be using mathematical expressions anyway.
+
+### Dependency analysis
+#### Expression contexts
+Because `soctool` does not evaluate expressions, it cannot follow references calculated by them. This means that selectors cannot recursively include entities that are referenced within a mathematical expression.
+
+However, **these expressions will be included in the dependency listing**, even if the referenced entities are declared locally. You can use this information to manually augment your selectors to include these references.
+
+#### Actions
+As of SRB2 2.2, `soctool` is aware of all documented built-in `Actions` which accept an entity reference through either `Var1` or `Var2`. Almost all of these references are recognized, and will be recursively expanded by selectors (if possible) and included in the dependency listing.
+
+However, some `Actions` are not supported due to non-standard implementations.
+
+Partially supported:
+- `A_CheckThingCount` and `A_MultiShot` use the upper 16 bits of `Var1` to store object references. Recursive selections will never follow these references, and they will never be ported. Their `Var1` expression will however always be included in the dependency reference listing.
+
+No support:
+
+- `A_DropMine` and `A_ShootBullet` use the `RaiseState` field on their actor's object to store an ***object*** reference. This is not supported by `soctool`'s current design. In fact, if an object's `RaiseState` contains an object reference, there's a possibility the object will be interpreted as a state reference (but only if there exists a locally declared State with the same name).
+- `A_RandomStateRange` is not supported, since it would require runtime evaluation of `Var1` and `Var2`.
+- `A_CusValAction`, `A_RelayCustomValue`, `A_SetCustomValue`, `A_UseCusValMemo` would require runtime evaluation to properly support.
+
+If `soctool` encounters one of these completely unsupported actions, it will generate an appropriate warning.
 # Prerequisite software
 `soctool` is written in Scala, and therefore requires the JVM to run.
