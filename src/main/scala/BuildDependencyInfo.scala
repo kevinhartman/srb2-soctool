@@ -43,7 +43,7 @@ object BuildDependencyInfo {
         externSprites = deps.externSprites ++ state.spriteNumber
           .filterNot(socScript.freeSlots.contains),
         spriteFiles = deps.spriteFiles ++ state.spriteNumber
-          .filterNot(socScript.freeSlots.contains)
+          .filter(socScript.freeSlots.contains)
           .map(spriteName(_, state.spriteSubNumber.getOrElse("0"))),
         externObjects = deps.externObjects ++ state.objects.filterNot(socScript.objects.contains),
         externSounds = deps.externSounds ++ state.sounds.filterNot(socScript.sounds.contains),
