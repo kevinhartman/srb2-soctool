@@ -41,7 +41,7 @@ object BuildDependencyInfo {
       deps.copy(
         externStates = deps.externStates ++ state.states.filterNot(socScript.states.contains),
         externSprites = deps.externSprites ++ state.spriteNumber
-          .filterNot(id => socScript.freeSlots.contains(id) || !isHardcoded(id)),
+          .filterNot(id => socScript.freeSlots.contains(id)),
         spriteFiles = deps.spriteFiles ++ state.spriteNumber
           .filterNot(isHardcoded)
           .map(spriteName(_, state.spriteSubNumber.getOrElse("0"))),
