@@ -1,0 +1,10 @@
+FROM oracle/graalvm-ce:20.0.0-java11
+
+# install native-image
+RUN gu install native-image
+
+# work dir on /opt/workspace
+WORKDIR /opt/workspace
+
+# run native-image
+ENTRYPOINT ["native-image"]

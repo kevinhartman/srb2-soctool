@@ -1,0 +1,107 @@
+name: Continuous Integration
+on:
+  push:
+    branches:
+      - master
+      - cicd
+    tags:
+      - '*'
+  pull_request:
+    branches:
+      - master
+jobs:
+  build:
+    name: sbt assembly
+    runs-on: ubuntu-latest
+    container:
+      image: eed3si9n/sbt:jdk11-alpine
+    steps:
+      - uses: actions/checkout@v2
+      - name: sbt assembly
+        run: sbt 'set assemblyOutputPath in assembly := new File("./target/soctool.jar")' assembly
+      - uses: actions/upload-artifact@v2
+        with:
+          path: target/soctool.jar
+
+  release_jar:
+    name: jar-image
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/download-artifact@v2
+      with:
+        path: ./
+    - name: Create GitHub release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: 'artifact/soctool.jar'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  release_nix:
+    name: native-image-nix
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: build
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04, macos-10.15]
+    steps:
+      - uses: DeLaGuardo/setup-graalvm@3
+        with:
+          graalvm-version: '20.0.0.java11'
+
+      - name: Install GraalVM's native-image extension
+        run: gu install native-image
+
+      - uses: actions/download-artifact@v2
+        with:
+          path: ./
+
+      - name: Create native soctool
+        run: native-image --verbose -jar ./artifact/soctool.jar soctool
+
+      - name: Create tarball
+        run: tar -zcvf "soctool-${{ matrix.os }}.tar.gz" soctool
+
+      # Even though this is in a matrix, it'll be idempotent
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: 'soctool-${{ matrix.os }}.tar.gz'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  release_win:
+    name: native-image-win
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: build
+    runs-on: windows-2019
+    steps:
+    - uses: DeLaGuardo/setup-graalvm@3
+      with:
+        graalvm-version: '20.0.0.java11'
+
+    - name: Install GraalVM's native-image extension
+      run: ${{ env.JAVA_HOME }}\bin\gu.cmd install native-image
+
+    - uses: actions/download-artifact@v2
+      with:
+        path: ./
+
+    - name: Create native soctool
+      run: >-
+        "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat" &&
+        ${{ env.JAVA_HOME }}\bin\native-image.cmd --verbose -jar .\artifact\soctool.jar soctool
+      shell: cmd
+
+    - name: Create zip
+      run: 7z a soctool-windows.zip soctool.exe
+
+    - name: Create GitHub release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: 'soctool-windows.zip'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
