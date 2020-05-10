@@ -1,12 +1,13 @@
 <p align="center">
   <a href="https://wiki.srb2.org/wiki/File:CREDIT05HQ.png">
-  <img src="/banner.png" alt="Official artwork from credits of tails fixing a Robot." height="314" width="600">
+  <img src="/banner.png" alt="Official artwork from credits of tails fixing a Robot, with Patrick Star lurking in the shadows, cloaked by a sock worn over his entire head." height="314" width="600">
   </a>
 </p>
 
 <h1 align="center">soctool (for SRB2)</h1>
 
 ![Continuous Integration](https://github.com/kevinhartman/srb2-soctool/workflows/Continuous%20Integration/badge.svg)
+![Twitter Follow](https://img.shields.io/twitter/follow/ctr_peach?style=social)
 
 A CLI tool to help you port SOC (Sonic Object Configuration) files.
 
