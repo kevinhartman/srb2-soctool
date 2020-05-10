@@ -135,5 +135,8 @@ No support:
 - `A_CusValAction`, `A_RelayCustomValue`, `A_SetCustomValue`, `A_UseCusValMemo` would require runtime evaluation to properly support.
 
 If `soctool` encounters one of these completely unsupported actions, it will generate an appropriate warning.
-# Prerequisite software
-`soctool` is written in Scala, and therefore requires the JVM to run.
+
+# Download
+`soctool` is written in Scala (and thus can run on any system with a JVM), but is also cross-compiled to native 64-bit executables for macOS, Windows, and Linux (thanks, [GraalVM](https://github.com/oracle/graal)!).
+
+Get the latest version for your system in the Releases tab.
