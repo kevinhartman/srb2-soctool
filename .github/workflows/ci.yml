@@ -1,9 +1,8 @@
-name: Continuous Integration
+name: Build and release
 on:
   push:
     branches:
       - master
-      - cicd
     tags:
       - '*'
   pull_request:
