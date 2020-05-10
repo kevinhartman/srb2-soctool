@@ -7,7 +7,7 @@
 <h1 align="center">soctool (for SRB2)</h1>
 
 ![Continuous Integration](https://github.com/kevinhartman/srb2-soctool/workflows/Continuous%20Integration/badge.svg)
-![Twitter Follow](https://img.shields.io/twitter/follow/ctr_peach?style=social)
+[![Twitter Follow](https://img.shields.io/twitter/follow/ctr_peach?style=social)](https://twitter.com/ctr_peach)
 
 A CLI tool to help you port SOC (Sonic Object Configuration) files.
 
