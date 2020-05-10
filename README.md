@@ -18,6 +18,7 @@ Given valid SOC, emits valid SOC (or Lua!).
 - **Generate Lua.** Migrate SOC scripts to Lua.
 - **Dependency info.** Generates a listing of all external references made by the SOC, as well as required asset files.
 - **Selection and extraction.** Recursively extract only specific entities (by ID), as well as their local dependencies.
+- **Updates property names.** Any old-style SOC property names are updated (e.g. `SpriteSubNumber` => `SpriteFrame`).
 
 # Usage
 
