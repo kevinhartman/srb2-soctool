@@ -5,7 +5,10 @@
 </p>
 
 <h1 align="center">soctool (for SRB2)</h1>
-A CLI tool designed to assist in the porting of SOC (Sonic Object Configuration) files.
+
+![Continuous Integration](https://github.com/kevinhartman/srb2-soctool/workflows/Continuous%20Integration/badge.svg)
+
+A CLI tool to help you port SOC (Sonic Object Configuration) files.
 
 Given valid SOC, emits valid SOC (or Lua!).
 
@@ -50,9 +53,7 @@ After porting SOC entities, be sure to examine the dependency listing to determi
 ## Dependency listing
 By default, the generated output (SOC or Lua code) includes a listing of all external references** and required assets. If your output is missing dependencies from the original input SOC file, they will be listed as external references here, along with any other external references.
 
-** There are some limitations to `soctool`'s dependency analysis that prevent certain dependencies from being recognized. See the Limitations section below for details.
-
-The listing includes:
+** There are some limitations to `soctool`'s dependency analysis that prevent certain dependencies from being recognized. See the Limitations section for details.
 
 #### External <entity> references
 Any references to entities not declared in the output. This includes hard-coded slot IDs (unless they have been overridden within the selection).
