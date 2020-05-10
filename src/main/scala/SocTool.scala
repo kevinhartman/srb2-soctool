@@ -1,3 +1,4 @@
+import scala.collection.mutable
 import scala.io.Source
 import scala.util.{Success, Try}
 
@@ -8,6 +9,7 @@ import scala.util.{Success, Try}
 //  - Lots of missing properties on Level.
 //  - We should list required sound files for hard-coded number slots that have a local Sound def.
 //    Will need to look through SRB2 src to figure out how these are named.
+//  - Validate user freeslot prefix.
 //  ---
 //  Stretch
 //  - Support upper 16 references when the full 32 bits of the var is an int.
@@ -28,11 +30,19 @@ object SocTool extends App {
     throw new Exception(s"** Error: $message")
   }
 
-  def argValue(argNames: Set[String]): Option[String] =
-    args.dropWhile(arg => !argNames.contains(arg)).drop(1).headOption
+  // Okay, this isn't "functionally pure".
+  // Everything else in this codebase is, though (for better or worse).
+  val knownArgs: mutable.Set[String] = mutable.Set()
 
-  def argFlag(argNames: Set[String]): Boolean =
+  def argValue(argNames: Set[String]): Option[String] = {
+    knownArgs ++= argNames
+    args.dropWhile(arg => !argNames.contains(arg)).drop(1).headOption
+  }
+
+  def argFlag(argNames: Set[String]): Boolean = {
+    knownArgs ++= argNames
     args.dropWhile(arg => !argNames.contains(arg)).nonEmpty
+  }
 
   def toIdList(arg: Option[String]) = {
     arg.getOrElse("").split(',').filter(_.nonEmpty)
@@ -55,6 +65,14 @@ object SocTool extends App {
   val noDescribe = argFlag(Set("--no-describe", "-D"))
   val noInlineComments = argFlag(Set("--no-inline-comments", "-I"))
   val noAttribution = PrintHelp(argFlag(Set("--no-attribution", "-A")))
+
+  args.foreach(arg => {
+    if (arg.startsWith("-") && !knownArgs.contains(arg)) {
+      System.err.println(s"** Error: unknown argument $arg")
+      PrintHelp()
+      System.exit(1)
+    }
+  })
 
   if (noRecurse) {
     System.err.println(
