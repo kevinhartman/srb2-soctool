@@ -56,6 +56,14 @@ object SocTool extends App {
   val noInlineComments = argFlag(Set("--no-inline-comments", "-I"))
   val noAttribution = PrintHelp(argFlag(Set("--no-attribution", "-A")))
 
+  if (noRecurse) {
+    System.err.println(
+      """--no-recurse isn't implemented.
+        |...it should be relatively easy, but I haven't gotten to it. PRs welcome :)
+        |""".stripMargin)
+    System.exit(1)
+  }
+
   if (help) {
     PrintHelp()
     System.exit(0)
